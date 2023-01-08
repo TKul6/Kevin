@@ -1,0 +1,8 @@
+{
+    "strict": true,
+    "sourceMap": true,
+    "compilerOptions": {
+        "outDir": "./dist"
+    }
+
+}
