@@ -1,6 +1,6 @@
-import { IEnvironmentData } from "./environment-data";
+import {  IEnvironmentInformation } from "./environment-data";
 
 export interface IKevinValue {
-    value: any;
-    environmentInfo: IEnvironmentData;
+    value: string;
+    environmentInfo: IEnvironmentInformation;
 }

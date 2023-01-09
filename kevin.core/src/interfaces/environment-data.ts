@@ -1,5 +1,11 @@
 export interface IEnvironmentData {
     name: string;
     id: string;
-    environmentsChain: Array<IEnvironmentData>
+   parentEnvironmentId: string;
+}
+
+export interface IEnvironmentInformation {
+    name: string;
+    id: string;
+   parentEnvironment: IEnvironmentInformation;
 }
