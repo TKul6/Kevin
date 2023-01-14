@@ -1,15 +1,14 @@
-import {IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider} from '../interfaces'
-import {EnvironmentNotFoundError, InvalidEnvironmentInfoError} from '../errors'
+import { IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider } from '../interfaces'
+import { EnvironmentNotFoundError, InvalidEnvironmentInfoError } from '../errors'
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
 const DEFAULT_ENVIRONMENT_NAME = "default";
-export class KevinService implements IKevinManager
-{
+export class KevinService implements IKevinManager {
 
     private envInfo: IEnvironmentInformation;
     constructor(private provider: IProvider) {
 
-        if(!provider) {
+        if (!provider) {
             throw new Error("Provider is required");
         }
 
@@ -21,9 +20,9 @@ export class KevinService implements IKevinManager
             parentEnvironmentId: null,
         }
 
-       await this.provider.setValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + data.name, JSON.stringify(data));
+        await this.provider.setValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + data.name, JSON.stringify(data));
 
-       return {name: DEFAULT_ENVIRONMENT_NAME, id: DEFAULT_ENVIRONMENT_NAME, parentEnvironment: null}
+        return { name: DEFAULT_ENVIRONMENT_NAME, id: DEFAULT_ENVIRONMENT_NAME, parentEnvironment: null }
 
     }
 
@@ -37,49 +36,49 @@ export class KevinService implements IKevinManager
         const parseData = await this.getEnvironmentMetaData(environmentName);
 
         // TODO - here the environment info has only the parent id need to iterate over the parent and build the full chain.
-        this.envInfo  = {id: parseData.id, name: parseData.name, parentEnvironment: null}
+        this.envInfo = { id: parseData.id, name: parseData.name, parentEnvironment: null }
 
         let parentEnvironmentId = parseData.parentEnvironmentId;
-let currentEnvironment = this.envInfo;
-        while(parentEnvironmentId) {
-            const parentEnvironment =   await this.getEnvironmentMetaData(parentEnvironmentId);
-currentEnvironment.parentEnvironment = {id: parentEnvironment.id, name: parentEnvironment.name, parentEnvironment: null};
+        let currentEnvironment = this.envInfo;
+        while (parentEnvironmentId) {
+            const parentEnvironment = await this.getEnvironmentMetaData(parentEnvironmentId);
+            currentEnvironment.parentEnvironment = { id: parentEnvironment.id, name: parentEnvironment.name, parentEnvironment: null };
             parentEnvironmentId = parentEnvironment.parentEnvironmentId;
             currentEnvironment = currentEnvironment.parentEnvironment;
- 
+
         }
 
 
     }
-        private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
-            const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
+    private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
+        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
 
-            if (!data) {
-                throw new EnvironmentNotFoundError(environmentName);
-            }
-
-            const parseData = JSON.parse(data) as IEnvironmentMetaData;
-
-            if (!parseData) {
-                throw new InvalidEnvironmentInfoError(environmentName);
-            }
-            return parseData;
+        if (!data) {
+            throw new EnvironmentNotFoundError(environmentName);
         }
-    
-    
+
+        const parseData = JSON.parse(data) as IEnvironmentMetaData;
+
+        if (!parseData) {
+            throw new InvalidEnvironmentInfoError(environmentName);
+        }
+        return parseData;
+    }
+
+
     async getValue(key: string): Promise<IKevinValue> {
         let currentEnvironment = this.envInfo;
         let value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
 
-        while(!value && this.envInfo.parentEnvironment) {
+        while (!value && this.envInfo.parentEnvironment) {
             currentEnvironment = currentEnvironment.parentEnvironment;
             value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
         }
 
-        if(!value) {
+        if (!value) {
             return null;
         }
-        return {value, environmentInfo: currentEnvironment}
+        return { value, environmentInfo: currentEnvironment }
 
 
 
