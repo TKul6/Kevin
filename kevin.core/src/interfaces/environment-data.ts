@@ -1,4 +1,4 @@
-export interface IEnvironmentData {
+export interface IEnvironmentMetaData {
     name: string;
     id: string;
    parentEnvironmentId: string;

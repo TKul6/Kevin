@@ -1,8 +1,8 @@
-import {IEnvironmentData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider} from '../interfaces'
+import {IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider} from '../interfaces'
 import {EnvironmentNotFoundError, InvalidEnvironmentInfoError} from '../errors'
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
-
+const DEFAULT_ENVIRONMENT_NAME = "default";
 export class KevinService implements IKevinManager
 {
 
@@ -15,42 +15,57 @@ export class KevinService implements IKevinManager
 
     }
     async createDefaultEnvironment(): Promise<IEnvironmentInformation> {
-        const data: IEnvironmentData = {
-            name: "default",
-            id: "6", // TODO create uuid
+        const data: IEnvironmentMetaData = {
+            name: DEFAULT_ENVIRONMENT_NAME,
+            id: DEFAULT_ENVIRONMENT_NAME,
             parentEnvironmentId: null,
         }
 
        await this.provider.setValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + data.name, JSON.stringify(data));
 
-       return {name: "default", id: "6", parentEnvironment: null}
+       return {name: DEFAULT_ENVIRONMENT_NAME, id: DEFAULT_ENVIRONMENT_NAME, parentEnvironment: null}
 
     }
 
-    getEnvironments(): Promise<IEnvironmentData[]> {
+    getEnvironments(): Promise<IEnvironmentMetaData[]> {
 
         //TODO - implement after provider support keyKeyRange.
         throw new Error('Method not implemented.');
     }
     async setCurrentEnvironment(environmentName: string): Promise<void> {
 
-        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
-
-        if(!data) {
-            throw new EnvironmentNotFoundError(environmentName);
-        }
-
-        const parseData = JSON.parse(data) as IEnvironmentData;
-        
-        if(!parseData) {
-            throw new InvalidEnvironmentInfoError(environmentName);
-        }
+        const parseData = await this.getEnvironmentMetaData(environmentName);
 
         // TODO - here the environment info has only the parent id need to iterate over the parent and build the full chain.
         this.envInfo  = {id: parseData.id, name: parseData.name, parentEnvironment: null}
+
+        let parentEnvironmentId = parseData.parentEnvironmentId;
+let currentEnvironment = this.envInfo;
+        while(parentEnvironmentId) {
+            const parentEnvironment =   await this.getEnvironmentMetaData(parentEnvironmentId);
+currentEnvironment.parentEnvironment = {id: parentEnvironment.id, name: parentEnvironment.name, parentEnvironment: null};
+            parentEnvironmentId = parentEnvironment.parentEnvironmentId;
+            currentEnvironment = currentEnvironment.parentEnvironment;
  
-       
+        }
+
+
     }
+        private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
+            const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
+
+            if (!data) {
+                throw new EnvironmentNotFoundError(environmentName);
+            }
+
+            const parseData = JSON.parse(data) as IEnvironmentMetaData;
+
+            if (!parseData) {
+                throw new InvalidEnvironmentInfoError(environmentName);
+            }
+            return parseData;
+        }
+    
     
     async getValue(key: string): Promise<IKevinValue> {
         let currentEnvironment = this.envInfo;
