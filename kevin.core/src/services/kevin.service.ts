@@ -26,10 +26,15 @@ export class KevinService implements IKevinManager {
 
     }
 
-    getEnvironments(): Promise<IEnvironmentMetaData[]> {
+    async getEnvironments(): Promise<IEnvironmentMetaData[]> {
 
-        //TODO - implement after provider support keyKeyRange.
-        throw new Error('Method not implemented.');
+        const unparsedEnvironments = await this.provider.getValueRange(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".");
+
+        if (!unparsedEnvironments || unparsedEnvironments.length === 0) {
+            return [];
+        }
+
+        return unparsedEnvironments.map((unparsedEnvironment) => JSON.parse(unparsedEnvironment) as IEnvironmentMetaData);
     }
     async setCurrentEnvironment(environmentName: string): Promise<void> {
 
