@@ -1,0 +1,26 @@
+{
+  "name": "@kevin/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TKul6/Kevin.git"
+  },
+  "keywords": [
+    "kevin",
+    "KV",
+    "store",
+    "configuration"
+  ],
+  "author": "Tomer Khalili",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TKul6/Kevin/issues"
+  },
+  "homepage": "https://github.com/TKul6/Kevin#readme"
+}

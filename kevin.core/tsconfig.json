@@ -1,0 +1,13 @@
+{
+    "strict": false,
+    "sourceMap": true,
+   
+    "compilerOptions": {
+        "outDir": "./dist",
+        "strictNullChecks": false,
+        "lib": ["es2015"]
+    },
+    
+
+
+}
