@@ -40,7 +40,6 @@ export class KevinService implements IKevinManager {
 
         const parseData = await this.getEnvironmentMetaData(environmentName);
 
-        // TODO - here the environment info has only the parent id need to iterate over the parent and build the full chain.
         this.envInfo = { id: parseData.id, name: parseData.name, parentEnvironment: null }
 
         let parentEnvironmentId = parseData.parentEnvironmentId;
@@ -53,23 +52,7 @@ export class KevinService implements IKevinManager {
 
         }
 
-
     }
-    private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
-        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
-
-        if (!data) {
-            throw new EnvironmentNotFoundError(environmentName);
-        }
-
-        const parseData = JSON.parse(data) as IEnvironmentMetaData;
-
-        if (!parseData) {
-            throw new InvalidEnvironmentInfoError(environmentName);
-        }
-        return parseData;
-    }
-
 
     async getValue(key: string): Promise<IKevinValue> {
         let currentEnvironment = this.envInfo;
@@ -85,22 +68,45 @@ export class KevinService implements IKevinManager {
         }
         return { value, environmentInfo: currentEnvironment }
 
-
-
-
-
     }
     setValue(key: string, value: string): Promise<void> {
         return this.provider.setValue(this.getFullKey(key), value);
     }
 
-    getEnvironmentData(): Promise<IKevinValue[]> {
-        // Todo - implement after provider support keyKeyRange.
-        throw new Error('Method not implemented.');
+    public async getEnvironmentData(): Promise<IKevinValue[]> {
+
+        const defaultEnvironmentKeysPrefix = DEFAULT_ENVIRONMENT_NAME + KEY_DELIMITER;
+
+        const fullKeys = await this.provider.getKeys(defaultEnvironmentKeysPrefix);
+
+        const keys = fullKeys.map((fullKey) => fullKey.replace(defaultEnvironmentKeysPrefix, ""));
+
+        const results = [];
+        for (const key of keys) {
+            const value = await this.getValue(key);
+            results.push(value);
+        }
+        return results;
+
     }
 
     private getFullKey(key: string, environment: IEnvironmentInformation = this.envInfo): string {
         return environment.id + KEY_DELIMITER + key;
+    }
+
+    private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
+        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
+
+        if (!data) {
+            throw new EnvironmentNotFoundError(environmentName);
+        }
+
+        const parseData = JSON.parse(data) as IEnvironmentMetaData;
+
+        if (!parseData) {
+            throw new InvalidEnvironmentInfoError(environmentName);
+        }
+        return parseData;
     }
 
 }
