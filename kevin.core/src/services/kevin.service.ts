@@ -7,11 +7,9 @@ export class KevinService implements IKevinManager {
 
     private envInfo: IEnvironmentInformation;
     constructor(private provider: IProvider) {
-
         if (!provider) {
             throw new Error("Provider is required");
         }
-
     }
     async createDefaultEnvironment(): Promise<IEnvironmentInformation> {
         const data: IEnvironmentMetaData = {
@@ -20,7 +18,7 @@ export class KevinService implements IKevinManager {
             parentEnvironmentId: null,
         }
 
-        await this.provider.setValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + data.name, JSON.stringify(data));
+        await this.provider.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${data.name}`, JSON.stringify(data));
 
         return { name: DEFAULT_ENVIRONMENT_NAME, id: DEFAULT_ENVIRONMENT_NAME, parentEnvironment: null }
 
@@ -34,7 +32,8 @@ export class KevinService implements IKevinManager {
             return [];
         }
 
-        return unparsedEnvironments.map((unparsedEnvironment) => JSON.parse(unparsedEnvironment) as IEnvironmentMetaData);
+        return unparsedEnvironments.map((unparsedEnvironment) => this.parseEnvironmentMetadata(unparsedEnvironment, KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".*"));
+
     }
     async setCurrentEnvironment(environmentName: string): Promise<void> {
 
@@ -101,12 +100,21 @@ export class KevinService implements IKevinManager {
             throw new EnvironmentNotFoundError(environmentName);
         }
 
-        const parseData = JSON.parse(data) as IEnvironmentMetaData;
-
-        if (!parseData) {
-            throw new InvalidEnvironmentInfoError(environmentName);
-        }
-        return parseData;
+        return this.parseEnvironmentMetadata(data, environmentName);
     }
 
+
+    private parseEnvironmentMetadata(data: string, environmentName?: string) {
+        try {
+            const parseData = JSON.parse(data) as IEnvironmentMetaData;
+            if(parseData) {
+                return parseData;
+            }
+
+            throw new InvalidEnvironmentInfoError(environmentName);
+
+        } catch (error) {
+            throw new InvalidEnvironmentInfoError(environmentName);
+        }
+    }
 }
