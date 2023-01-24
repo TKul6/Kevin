@@ -1,15 +1,18 @@
 import { IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider } from '../interfaces'
-import { EnvironmentNotFoundError, InvalidEnvironmentInfoError } from '../errors'
+import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
+import { default as cloneDeep } from "lodash.clonedeep"
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
 const DEFAULT_ENVIRONMENT_NAME = "default";
 export class KevinService implements IKevinManager {
 
     private envInfo: IEnvironmentInformation;
-    constructor(private provider: IProvider) {
+    constructor(private provider: IProvider, info?: IEnvironmentInformation) {
         if (!provider) {
             throw new Error("Provider is required");
         }
+
+        this.envInfo = info;
     }
     async createDefaultEnvironment(): Promise<IEnvironmentInformation> {
         const data: IEnvironmentMetaData = {
@@ -35,7 +38,7 @@ export class KevinService implements IKevinManager {
         return unparsedEnvironments.map((unparsedEnvironment) => this.parseEnvironmentMetadata(unparsedEnvironment, KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".*"));
 
     }
-    async setCurrentEnvironment(environmentName: string): Promise<void> {
+    async setCurrentEnvironment(environmentName: string): Promise<IEnvironmentInformation> {
 
         const parseData = await this.getEnvironmentMetaData(environmentName);
 
@@ -51,13 +54,17 @@ export class KevinService implements IKevinManager {
 
         }
 
+        return cloneDeep(this.envInfo) as IEnvironmentInformation;
+
     }
 
     async getValue(key: string): Promise<IKevinValue> {
+
+        this.verifyEnvironmentIsSet();
         let currentEnvironment = this.envInfo;
         let value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
 
-        while (!value && this.envInfo.parentEnvironment) {
+        while (!value && currentEnvironment.parentEnvironment) {
             currentEnvironment = currentEnvironment.parentEnvironment;
             value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
         }
@@ -69,10 +76,13 @@ export class KevinService implements IKevinManager {
 
     }
     setValue(key: string, value: string): Promise<void> {
+        this.verifyEnvironmentIsSet();
         return this.provider.setValue(this.getFullKey(key), value);
     }
 
     public async getEnvironmentData(): Promise<IKevinValue[]> {
+
+        this.verifyEnvironmentIsSet();
 
         const defaultEnvironmentKeysPrefix = DEFAULT_ENVIRONMENT_NAME + KEY_DELIMITER;
 
@@ -107,7 +117,7 @@ export class KevinService implements IKevinManager {
     private parseEnvironmentMetadata(data: string, environmentName?: string) {
         try {
             const parseData = JSON.parse(data) as IEnvironmentMetaData;
-            if(parseData) {
+            if (parseData) {
                 return parseData;
             }
 
@@ -115,6 +125,12 @@ export class KevinService implements IKevinManager {
 
         } catch (error) {
             throw new InvalidEnvironmentInfoError(environmentName);
+        }
+    }
+
+    private verifyEnvironmentIsSet() {
+        if (!this.envInfo) {
+            throw new EnvironmentNotSetError();
         }
     }
 }

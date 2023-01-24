@@ -3,6 +3,7 @@
     "sourceMap": true,
    
     "compilerOptions": {
+        "skipLibCheck": true,
         "outDir": "./dist",
         "strictNullChecks": false,
         "lib": ["es2015"],
