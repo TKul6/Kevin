@@ -17,10 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name:  CI Kevin Core (Node.js ${{ matrix.node-version }})
-        working-directory: ./kevin.core
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+        working-directory: ./kevin.core     
       - run: npm ci
+        working-directory: ./kevin.core
       - run: npm run build --if-present
+        working-directory: ./kevin.core
       - run: npm test
+        working-directory: ./kevin.core
