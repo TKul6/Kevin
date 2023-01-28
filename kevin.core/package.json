@@ -1,7 +1,7 @@
 {
   "name": "@kevin/core",
   "version": "1.0.0",
-  "description": "",
+  "description": "Core library for managing configuration and data in your application, for multiple environments.",
   "main": "index.js",
   "scripts": {
     "test": "jest",

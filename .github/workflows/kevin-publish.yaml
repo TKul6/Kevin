@@ -1,0 +1,26 @@
+name: Publish Kevin Core
+on:
+  release:
+    types: [created]
+env:
+  MAJOR_VERSION: 1.0
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+        name: Install Dependencies
+        working-directory: ./kevin.core  
+      - run: npm version  $MAJOR_VERSION.$GITHUB_RUN_NUMBER
+        name: Bump Kevin Core package's version.
+        working-directory: ./kevin.core    
+      - run: npm publish
+        working-directory: ./kevin.core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
