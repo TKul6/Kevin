@@ -1,7 +1,7 @@
 name: Publish Kevin Core
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ main ]
 env:
   MAJOR_VERSION: 1.0
 jobs:
@@ -17,7 +17,7 @@ jobs:
       - run: npm ci
         name: Install Dependencies
         working-directory: ./kevin.core  
-      - run: npm version  $MAJOR_VERSION.$GITHUB_RUN_NUMBER
+      - run: npm version  $MAJOR_VERSION.$GITHUB_RUN_NUMBER=alpha
         name: Bump Kevin Core package's version.
         working-directory: ./kevin.core    
       - run: npm publish
