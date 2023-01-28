@@ -17,7 +17,7 @@ jobs:
       - run: npm ci
         name: Install Dependencies
         working-directory: ./kevin.core  
-      - run: npm version  $MAJOR_VERSION.$GITHUB_RUN_NUMBER-alpha
+      - run: npm version  $MAJOR_VERSION.${{ github.run_number }}-alpha
         name: Bump Kevin Core package's version.
         working-directory: ./kevin.core    
       - run: npm publish
