@@ -1,15 +1,15 @@
 {
     "strict": false,
     "sourceMap": true,
-   
     "compilerOptions": {
         "skipLibCheck": true,
         "outDir": "./dist",
         "strictNullChecks": false,
-        "lib": ["es2015"],
-        "esModuleInterop": true
+        "lib": [
+            "es2015"
+        ],
+        "esModuleInterop": true,
+        "declaration": true
+        
     },
-    
-
-
 }
