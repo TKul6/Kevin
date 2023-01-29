@@ -8,6 +8,25 @@
     "test": "jest",
     "build": "tsc"
   },
+  "exports": {
+    "./interfaces": "./dist/interfaces/index.js",
+    "./errors": "./dist/errors/index.js",
+    "./services": "./dist/services/index.js",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "interfaces": [
+        "dist/interfaces"
+      ],
+      "errors": [
+        "dist/errors"
+      ],
+      "services": [
+        "dist/services"
+      ]
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TKul6/Kevin.git"
