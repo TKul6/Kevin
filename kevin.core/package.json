@@ -2,8 +2,8 @@
   "name": "@kevin-infra/core",
   "version": "1.0.0",
   "description": "Core library for managing configuration and data in your application, for multiple environments.",
-  "main": "dist/services/kevin.service.js",
-  "types": "dist/services/kevin.service.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc"
