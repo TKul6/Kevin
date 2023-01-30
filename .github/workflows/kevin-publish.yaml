@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
 env:
-  MAJOR_VERSION: 1.0
+  MAJOR_VERSION: "1.0"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,11 +16,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
         name: Install Dependencies
-        working-directory: ./kevin.core  
-      - run: npm version  $MAJOR_VERSION.$GITHUB_RUN_NUMBER=alpha
+        working-directory: ./kevin.core
+      - run: npm run build 
+        name: Build Kevin Core
+        working-directory: ./kevin.core
+      - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
         name: Bump Kevin Core package's version.
         working-directory: ./kevin.core    
-      - run: npm publish
+      - run: npm publish --access=public
         working-directory: ./kevin.core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
