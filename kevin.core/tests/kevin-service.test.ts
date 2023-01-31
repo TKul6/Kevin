@@ -4,8 +4,8 @@ import { KevinService } from '../src/services/kevin.service';
 import { anyString, anything, instance, mock, verify, when } from "ts-mockito"
 import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../src/errors';
 
-const DEFAULT_ENVIRONMENT_NAME = "default";
-const DEFAULT_ENVIRONMENT_ID = "default";
+const DEFAULT_ENVIRONMENT_NAME = "root";
+const DEFAULT_ENVIRONMENT_ID = "root";
 const PARENT_ENVIRONMENT_ID = "6";
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 
@@ -26,8 +26,8 @@ describe("KevinService", () => {
 
     })
 
-    describe("create default environment", () => {
-        test("should create default environment", async () => {
+    describe("create root environment", () => {
+        test("should create root environment", async () => {
 
             // Arrange
 
@@ -36,7 +36,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act
-            const environment = await service.createDefaultEnvironment();
+            const environment = await service.createRootEnvironment();
             // Assert
             expect(environment.name).toBe(DEFAULT_ENVIRONMENT_NAME);
             expect(environment.id).toBe(DEFAULT_ENVIRONMENT_ID);
@@ -142,7 +142,7 @@ describe("KevinService", () => {
     });
 
     describe("set current environment", () => {
-        it("should set the default environment", async () => {
+        it("should set the root environment", async () => {
 
             // Arrange
             const envMetadata: IEnvironmentMetaData = {
@@ -419,7 +419,7 @@ describe("KevinService", () => {
         const KEYS = ["key1", "key2", "key3"];
         const VALUES = ["value1", "value2", "value3"];
 
-        it("should get all the keys of the default environment", async () => {
+        it("should get all the keys of the root environment", async () => {
 
             const environmentInfo: IEnvironmentInformation = {
                 name: DEFAULT_ENVIRONMENT_NAME,

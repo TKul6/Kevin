@@ -3,7 +3,7 @@ import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInf
 import { default as cloneDeep } from "lodash.clonedeep"
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
-const DEFAULT_ENVIRONMENT_NAME = "default";
+const ROOT_ENVIRONMENT_NAME = "root";
 export class KevinService implements IKevinManager {
 
     private envInfo: IEnvironmentInformation;
@@ -14,16 +14,16 @@ export class KevinService implements IKevinManager {
 
         this.envInfo = info;
     }
-    async createDefaultEnvironment(): Promise<IEnvironmentInformation> {
+    async createRootEnvironment(): Promise<IEnvironmentInformation> {
         const data: IEnvironmentMetaData = {
-            name: DEFAULT_ENVIRONMENT_NAME,
-            id: DEFAULT_ENVIRONMENT_NAME,
+            name: ROOT_ENVIRONMENT_NAME,
+            id: ROOT_ENVIRONMENT_NAME,
             parentEnvironmentId: null,
         }
 
         await this.provider.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${data.name}`, JSON.stringify(data));
 
-        return { name: DEFAULT_ENVIRONMENT_NAME, id: DEFAULT_ENVIRONMENT_NAME, parentEnvironment: null }
+        return { name: ROOT_ENVIRONMENT_NAME, id: ROOT_ENVIRONMENT_NAME, parentEnvironment: null }
 
     }
 
@@ -84,11 +84,11 @@ export class KevinService implements IKevinManager {
 
         this.verifyEnvironmentIsSet();
 
-        const defaultEnvironmentKeysPrefix = DEFAULT_ENVIRONMENT_NAME + KEY_DELIMITER;
+        const rootEnvironmentKeysPrefix = ROOT_ENVIRONMENT_NAME + KEY_DELIMITER;
 
-        const fullKeys = await this.provider.getKeys(defaultEnvironmentKeysPrefix);
+        const fullKeys = await this.provider.getKeys(rootEnvironmentKeysPrefix);
 
-        const keys = fullKeys.map((fullKey) => fullKey.replace(defaultEnvironmentKeysPrefix, ""));
+        const keys = fullKeys.map((fullKey) => fullKey.replace(rootEnvironmentKeysPrefix, ""));
 
         const results = [];
         for (const key of keys) {
