@@ -3,7 +3,7 @@ import { IKevinValue } from "./kevin-value";
 
 export interface IKevinManager {
     getEnvironments(): Promise<Array<IEnvironmentMetaData>>;
-    setCurrentEnvironment(environmentName: string): Promise<IEnvironmentInformation>;
+    setCurrentEnvironment(environmentId: string): Promise<IEnvironmentInformation>;
     getEnvironmentData(): Promise<Array<IKevinValue>>;
     getValue<T>(key: string): Promise<IKevinValue>;
     setValue(key: string, value: string): Promise<void>;

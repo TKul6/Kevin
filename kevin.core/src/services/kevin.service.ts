@@ -38,9 +38,9 @@ export class KevinService implements IKevinManager {
         return unparsedEnvironments.map((unparsedEnvironment) => this.parseEnvironmentMetadata(unparsedEnvironment, KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".*"));
 
     }
-    async setCurrentEnvironment(environmentName: string): Promise<IEnvironmentInformation> {
+    async setCurrentEnvironment(environmentId: string): Promise<IEnvironmentInformation> {
 
-        const parseData = await this.getEnvironmentMetaData(environmentName);
+        const parseData = await this.getEnvironmentMetaData(environmentId);
 
         this.envInfo = { id: parseData.id, name: parseData.name, parentEnvironment: null }
 
@@ -103,14 +103,14 @@ export class KevinService implements IKevinManager {
         return environment.id + KEY_DELIMITER + key;
     }
 
-    private async getEnvironmentMetaData(environmentName: string): Promise<IEnvironmentMetaData> {
-        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentName);
+    private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
+        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentId);
 
         if (!data) {
-            throw new EnvironmentNotFoundError(environmentName);
+            throw new EnvironmentNotFoundError(environmentId);
         }
 
-        return this.parseEnvironmentMetadata(data, environmentName);
+        return this.parseEnvironmentMetadata(data, environmentId);
     }
 
 

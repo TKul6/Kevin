@@ -151,19 +151,19 @@ describe("KevinService", () => {
                 parentEnvironmentId: null
             }
 
-            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).thenResolve(JSON.stringify(envMetadata));
+            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).thenResolve(JSON.stringify(envMetadata));
 
             const service = new KevinService(instance(providerMock));
 
             // Act
-            const envInfo = await service.setCurrentEnvironment(ROOT_ENVIRONMENT_NAME);
+            const envInfo = await service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID);
 
             // Assert
             expect(envInfo.name).toBe(ROOT_ENVIRONMENT_NAME);
             expect(envInfo.id).toBe(ROOT_ENVIRONMENT_ID);
             expect(envInfo.parentEnvironment).toBeNull();
 
-            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).once();
+            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).once();
             verify(providerMock.getValue(anyString())).once();
 
 
@@ -186,8 +186,8 @@ describe("KevinService", () => {
                 parentEnvironmentId: ROOT_ENVIRONMENT_ID
             }
 
-            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).thenResolve(JSON.stringify(parentEnvironment));
-            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + childEnvironmentName)).thenResolve(JSON.stringify(childEnvironment));
+            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).thenResolve(JSON.stringify(parentEnvironment));
+            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + childEnvironmentId)).thenResolve(JSON.stringify(childEnvironment));
 
             const service = new KevinService(instance(providerMock));
 
@@ -202,8 +202,8 @@ describe("KevinService", () => {
             expect(envInfo.parentEnvironment.id).toBe(ROOT_ENVIRONMENT_ID);
             expect(envInfo.parentEnvironment.parentEnvironment).toBeNull();
 
-            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).once();
-            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + childEnvironmentName)).once();
+            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).once();
+            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + childEnvironmentId)).once();
             verify(providerMock.getValue(anyString())).twice();
 
         });
@@ -212,16 +212,16 @@ describe("KevinService", () => {
 
             // Arrange
 
-            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).thenResolve(null);
+            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).thenResolve(null);
 
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_NAME)).rejects.toThrow(EnvironmentNotFoundError);
+            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow(EnvironmentNotFoundError);
 
             // Assert
 
-            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).once();
+            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).once();
             verify(providerMock.getValue(anyString())).once();
         });
 
@@ -229,16 +229,16 @@ describe("KevinService", () => {
 
             // Arrange
 
-            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).thenResolve("invalid data");
+            when(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).thenResolve("invalid data");
 
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_NAME)).rejects.toThrow(InvalidEnvironmentInfoError);
+            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow(InvalidEnvironmentInfoError);
 
             // Assert
 
-            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_NAME)).once();
+            verify(providerMock.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + ROOT_ENVIRONMENT_ID)).once();
             verify(providerMock.getValue(anyString())).once();
         });
 
