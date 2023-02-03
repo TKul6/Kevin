@@ -2,10 +2,6 @@ name: Kevin PR
 
 on:
   pull_request:
-    paths:
-      - .github/workflows/kevin-pr.yaml
-      - kevin-core/src/**
-      - kevin-core/tests/**
   push:
     branches: [ main ]
   
