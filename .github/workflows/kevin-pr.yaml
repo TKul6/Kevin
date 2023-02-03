@@ -1,12 +1,12 @@
 name: Kevin PR
 
 on:
-pull_request:
-  paths:
-    - kevin-core/src/**
-    - kevin-core/tests/**
-push:
-  branches: [ main ]
+  pull_request:
+    paths:
+      - kevin-core/src/**
+      - kevin-core/tests/**
+  push:
+    branches: [ main ]
   
     
 
