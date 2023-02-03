@@ -38,7 +38,7 @@ describe("KevinService", () => {
             // Act
             const environment = await service.createRootEnvironment();
             // Assert
-            expect(environment.name).toBe("DEFAULT_ENVIRONMENT_NAME");
+            expect(environment.name).toBe(ROOT_ENVIRONMENT_NAME);
             expect(environment.id).toBe(ROOT_ENVIRONMENT_ID);
             expect(environment.parentEnvironment).toBeNull();
 
