@@ -1,5 +1,5 @@
 export class EnvironmentNotFoundError extends Error {
-    constructor(public environmentName: string) {
+    constructor(public environmentId: string) {
         super("Environment not found");
     }
 }
