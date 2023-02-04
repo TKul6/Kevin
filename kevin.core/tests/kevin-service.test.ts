@@ -536,4 +536,145 @@ describe("KevinService", () => {
 
 
     })
+
+    describe("create environment", () => {
+
+        const NEW_ENVIRONMENT_NAME = "newEnvironment";
+
+        it("should create a new environment under the root environment.", async () => {
+
+            // Arrange
+
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${NEW_ENVIRONMENT_NAME}`;
+
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
+            when(providerMock.getValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`))
+                .thenResolve(JSON.stringify({ name: ROOT_ENVIRONMENT_NAME, id: ROOT_ENVIRONMENT_ID, parentEnvironmentId: null }));
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).thenResolve(false);
+            when(providerMock.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`, anything())).thenResolve();
+
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act
+            const newEnvironment = await service.createEnvironment(NEW_ENVIRONMENT_NAME, ROOT_ENVIRONMENT_ID);
+
+            // Assert
+            expect(newEnvironment.name).toBe(NEW_ENVIRONMENT_NAME);
+            expect(newEnvironment.id).toBe(expectedEnvironmentId);
+            expect(newEnvironment.parentEnvironmentId).toBe(ROOT_ENVIRONMENT_ID);
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).once();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+            verify(providerMock.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`, anything())).once();
+
+            verify(providerMock.hasKey(anyString())).twice()
+            verify(providerMock.setValue(anyString(), anything())).once();
+            verify(providerMock.setValue(anyString(), anything())).once();
+
+        });
+
+        it("should create a new environment under the current environment.", async () => {
+
+
+            // Arrange
+
+            const rootEnvironment: IEnvironmentInformation = {
+                name: ROOT_ENVIRONMENT_NAME,
+                id: ROOT_ENVIRONMENT_ID,
+                parentEnvironment: null
+            }
+
+            const parentEnvironmentName = "parentEnvironment";
+            const parentEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${parentEnvironmentName}`;
+            const parentEnvironment: IEnvironmentInformation = {
+                name: parentEnvironmentName,
+                id: parentEnvironmentId,
+                parentEnvironment: rootEnvironment
+            }
+
+            const expectedEnvironmentId = `${parentEnvironmentId}/${NEW_ENVIRONMENT_NAME}`;
+
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).thenResolve(false);
+            when(providerMock.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`, anything())).thenResolve();
+
+
+            const service = new KevinService(instance(providerMock), parentEnvironment);
+
+            // Act
+            const newEnvironment = await service.createEnvironment(NEW_ENVIRONMENT_NAME);
+
+            // Assert
+            expect(newEnvironment.name).toBe(NEW_ENVIRONMENT_NAME);
+            expect(newEnvironment.id).toBe(expectedEnvironmentId);
+            expect(newEnvironment.parentEnvironmentId).toBe(parentEnvironmentId);
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${parentEnvironmentId}`)).never();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+            verify(providerMock.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`, anything())).once();
+
+            verify(providerMock.hasKey(anyString())).once();
+            verify(providerMock.setValue(anyString(), anything())).once();
+
+        });
+
+        it("should handle parent environment does not exists.", async () => {
+
+            // Arrange
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${PARENT_ENVIRONMENT_ID}`)).thenResolve(false);
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, PARENT_ENVIRONMENT_ID))
+                .rejects.toThrow(EnvironmentNotFoundError);
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${PARENT_ENVIRONMENT_ID}`)).once();
+
+            verify(providerMock.hasKey(anyString())).once();
+            verify(providerMock.setValue(anyString(), anything())).never();
+
+        });
+
+        it("should handle current environment is not set.", () => {
+
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME))
+                .rejects.toThrow(EnvironmentNotSetError);
+
+            verify(providerMock.hasKey(anyString())).never();
+            verify(providerMock.setValue(anyString(), anything())).never();
+        });
+
+        it("should handle environment already exists.", async () => {
+
+            // Arrange
+
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${NEW_ENVIRONMENT_NAME}`;
+
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).thenResolve(true);
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, ROOT_ENVIRONMENT_ID)).rejects.toThrow(DuplicateEnvironmentFound);
+
+            // Assert
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).once();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+
+
+            verify(providerMock.hasKey(anyString())).twice()
+            verify(providerMock.setValue(anyString(), anything())).never();
+
+        });
+
+
+
+    })
 });

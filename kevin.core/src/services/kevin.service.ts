@@ -103,12 +103,12 @@ export class KevinService implements IKevinManager {
 
     }
 
-    public async createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentInformation> {
+    public async createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentMetaData> {
 
         let parentId: string;
 
         if (parentEnvironmentId) {
-            const parentEnvExists = await this.provider.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${parentEnvironmentId}`);
+            const parentEnvExists = await this.provider.hasKey(this.getFullEnvironmentKey(parentEnvironmentId));
             if (!parentEnvExists) {
                 throw new EnvironmentNotFoundError(parentEnvironmentId);
 
@@ -116,40 +116,34 @@ export class KevinService implements IKevinManager {
             parentId = parentEnvironmentId;
         } else {
             this.verifyEnvironmentIsSet();
-            parentId = this.envInfo.parentEnvironment.id;
-        }
-
-        const newEnvironment: IEnvironmentInformation = {
-            name: environmentName,
-            id: "",
-            parentEnvironment: null
-        }
-
-        await this.buildEnvironmentData(newEnvironment, parentId);
-
-
-        newEnvironment.id = this.buildEnvironmentId(newEnvironment);
-
-        const environmentFullKey = `${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${newEnvironment.id}`;
-        const envExists = await this.provider.getValue(environmentFullKey);
-
-        if (envExists) {
-            throw new DuplicateEnvironmentFound(newEnvironment.id, newEnvironment.parentEnvironment.id);
+            parentId = this.envInfo.id;
         }
 
         const newEnvironmentMetadata = {
-            id: newEnvironment.id,
-            name: newEnvironment.name,
+            id: `${parentId}/${this.cleanName(environmentName)}`,
+            name: environmentName,
             parentEnvironmentId: parentId
+        }
+
+        const environmentFullKey = this.getFullEnvironmentKey(newEnvironmentMetadata.id);
+        const envExists = await this.provider.hasKey(environmentFullKey);
+
+        if (envExists) {
+            throw new DuplicateEnvironmentFound(newEnvironmentMetadata.id, parentId);
         }
 
         await this.provider.setValue(environmentFullKey, JSON.stringify(newEnvironmentMetadata));
 
-        return newEnvironment;
+        return newEnvironmentMetadata;
     }
 
-    private buildEnvironmentId(environment: IEnvironmentInformation): string {
-        return this.buildEnvironmentId(environment.parentEnvironment) + "/" + environment.name;
+
+    private getFullEnvironmentKey(environmentId: string): string {
+        return `${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${environmentId}`;
+    }
+
+    private cleanName(name: string): string {
+        return name.replace(/\//g, "_").replace(/ /g, "_");
     }
 
     private getFullKey(key: string, environment: IEnvironmentInformation = this.envInfo): string {
