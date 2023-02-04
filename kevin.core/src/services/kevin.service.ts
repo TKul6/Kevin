@@ -1,6 +1,7 @@
 import { IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider } from '../interfaces'
 import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
 import { default as cloneDeep } from "lodash.clonedeep"
+import { DuplicateEnvironmentFound } from '../errors/duplicate-environment-found.error';
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
 const ROOT_ENVIRONMENT_NAME = "root";
@@ -44,18 +45,21 @@ export class KevinService implements IKevinManager {
 
         this.envInfo = { id: parseData.id, name: parseData.name, parentEnvironment: null }
 
-        let parentEnvironmentId = parseData.parentEnvironmentId;
-        let currentEnvironment = this.envInfo;
+        await this.buildEnvironmentData(this.envInfo, parseData.parentEnvironmentId);
+
+        return cloneDeep(this.envInfo) as IEnvironmentInformation;
+
+    }
+
+    private async buildEnvironmentData(currentEnvironment: IEnvironmentInformation, parentEnvironmentId?: string): Promise<IEnvironmentInformation> {
+
         while (parentEnvironmentId) {
             const parentEnvironment = await this.getEnvironmentMetaData(parentEnvironmentId);
             currentEnvironment.parentEnvironment = { id: parentEnvironment.id, name: parentEnvironment.name, parentEnvironment: null };
             parentEnvironmentId = parentEnvironment.parentEnvironmentId;
             currentEnvironment = currentEnvironment.parentEnvironment;
-
         }
-
-        return cloneDeep(this.envInfo) as IEnvironmentInformation;
-
+        return currentEnvironment;
     }
 
     async getValue(key: string): Promise<IKevinValue> {
@@ -97,6 +101,55 @@ export class KevinService implements IKevinManager {
         }
         return results;
 
+    }
+
+    public async createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentInformation> {
+
+        let parentId: string;
+
+        if (parentEnvironmentId) {
+            const parentEnvExists = await this.provider.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${parentEnvironmentId}`);
+            if (!parentEnvExists) {
+                throw new EnvironmentNotFoundError(parentEnvironmentId);
+
+            }
+            parentId = parentEnvironmentId;
+        } else {
+            this.verifyEnvironmentIsSet();
+            parentId = this.envInfo.parentEnvironment.id;
+        }
+
+        const newEnvironment: IEnvironmentInformation = {
+            name: environmentName,
+            id: "",
+            parentEnvironment: null
+        }
+
+        await this.buildEnvironmentData(newEnvironment, parentId);
+
+
+        newEnvironment.id = this.buildEnvironmentId(newEnvironment);
+
+        const environmentFullKey = `${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${newEnvironment.id}`;
+        const envExists = await this.provider.getValue(environmentFullKey);
+
+        if (envExists) {
+            throw new DuplicateEnvironmentFound(newEnvironment.id, newEnvironment.parentEnvironment.id);
+        }
+
+        const newEnvironmentMetadata = {
+            id: newEnvironment.id,
+            name: newEnvironment.name,
+            parentEnvironmentId: parentId
+        }
+
+        await this.provider.setValue(environmentFullKey, JSON.stringify(newEnvironmentMetadata));
+
+        return newEnvironment;
+    }
+
+    private buildEnvironmentId(environment: IEnvironmentInformation): string {
+        return this.buildEnvironmentId(environment.parentEnvironment) + "/" + environment.name;
     }
 
     private getFullKey(key: string, environment: IEnvironmentInformation = this.envInfo): string {

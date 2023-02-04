@@ -3,5 +3,6 @@ export interface IProvider {
     setValue(key: string, value: string): Promise<void>;
     getValueRange(keyPrefix: string): Promise<string[]>;
     getKeys(keyPrefix: string): Promise<string[]>;
+    hasKey(key: string): Promise<boolean>;
 
 }
