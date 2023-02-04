@@ -1,11 +1,11 @@
 export interface IEnvironmentMetaData {
     name: string;
     id: string;
-   parentEnvironmentId: string;
+    parentEnvironmentId: string;
 }
 
 export interface IEnvironmentInformation {
     name: string;
     id: string;
-   parentEnvironment: IEnvironmentInformation;
+    parentEnvironment: IEnvironmentInformation;
 }
