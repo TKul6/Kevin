@@ -626,7 +626,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, PARENT_ENVIRONMENT_ID))
+            await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, PARENT_ENVIRONMENT_ID))
                 .rejects.toThrow(EnvironmentNotFoundError);
 
             verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${PARENT_ENVIRONMENT_ID}`)).once();
@@ -636,13 +636,13 @@ describe("KevinService", () => {
 
         });
 
-        it("should handle current environment is not set.", () => {
+        it("should handle current environment is not set.", async () => {
 
 
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME))
+            await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME))
                 .rejects.toThrow(EnvironmentNotSetError);
 
             verify(providerMock.hasKey(anyString())).never();
@@ -652,7 +652,6 @@ describe("KevinService", () => {
         it("should handle environment already exists.", async () => {
 
             // Arrange
-
             const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${NEW_ENVIRONMENT_NAME}`;
 
             when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
@@ -661,16 +660,16 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, ROOT_ENVIRONMENT_ID)).rejects.toThrow(DuplicateEnvironmentFound);
+            await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, ROOT_ENVIRONMENT_ID))
+                .rejects.toThrow(DuplicateEnvironmentFound);
 
             // Assert
 
             verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).once();
-            // TODO why the mock says it wasn't called?
-        //    verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
 
 
-          //  verify(providerMock.hasKey(anyString())).twice()
+            verify(providerMock.hasKey(anyString())).twice()
             verify(providerMock.setValue(anyString(), anything())).never();
 
         });
