@@ -1,5 +1,5 @@
 import { IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinValue, IProvider } from '../interfaces'
-import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
+import { DuplicateKeyFoundError, EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
 import { default as cloneDeep } from "lodash.clonedeep"
 import { DuplicateEnvironmentFound } from '../errors/duplicate-environment-found.error';
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
@@ -138,6 +138,24 @@ export class KevinService implements IKevinManager {
     }
 
 
+    public async addKey(key: string, value: string, defaultValue = ""): Promise<void> {
+        this.verifyEnvironmentIsSet();
+
+        const currentValue = await this.getValue(key);
+        if (currentValue) {
+            throw new DuplicateKeyFoundError(currentValue);
+
+        }
+        const promises = [this.provider.setValue(this.getFullKey(key), value)];
+
+        if (this.envInfo.id !== ROOT_ENVIRONMENT_NAME) {
+            promises.push(this.provider.setValue(this.getFullKeyByEnvironmentId(key, ROOT_ENVIRONMENT_NAME), defaultValue));
+        }
+
+        await Promise.all(promises)
+    }
+
+
     private getFullEnvironmentKey(environmentId: string): string {
         return `${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${environmentId}`;
     }
@@ -147,7 +165,11 @@ export class KevinService implements IKevinManager {
     }
 
     private getFullKey(key: string, environment: IEnvironmentInformation = this.envInfo): string {
-        return environment.id + KEY_DELIMITER + key;
+        return this.getFullKeyByEnvironmentId(key, environment.id);
+    }
+
+    private getFullKeyByEnvironmentId(key: string, environmentId: string): string {
+        return environmentId + KEY_DELIMITER + key;
     }
 
     private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
