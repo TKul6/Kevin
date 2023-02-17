@@ -9,6 +9,8 @@ export interface IKevinManager {
     setValue(key: string, value: string): Promise<void>;
     createRootEnvironment(): Promise<IEnvironmentInformation>;
     createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentMetaData>;
+    addKey(key: string, value: string, defaultValue?): Promise<void>;
+    
 
 
 }
