@@ -258,7 +258,7 @@ describe("KevinService", () => {
             // Arrange
             const keyName = "key";
             const keyValue = "value";
-            const keyPath = `${ENVIRONMENT_INFO.id}.keys.${keyName}`;
+            const keyPath = `kevin.${ENVIRONMENT_INFO.id}.keys.${keyName}`;
             when(providerMock.getValue(keyPath)).thenResolve(keyValue);
 
             const service = new KevinService(instance(providerMock), ENVIRONMENT_INFO);
@@ -295,8 +295,8 @@ describe("KevinService", () => {
 
             const keyName = "key";
             const keyValue = "value";
-            const childKeyPath = `${childEnvironment.id}.keys.${keyName}`;
-            const parentKeyPath = `${parentEnvironment.id}.keys.${keyName}`;
+            const childKeyPath = `kevin.${childEnvironment.id}.keys.${keyName}`;
+            const parentKeyPath = `kevin.${parentEnvironment.id}.keys.${keyName}`;
             when(providerMock.getValue(childKeyPath)).thenResolve(null);
             when(providerMock.getValue(parentKeyPath)).thenResolve(keyValue);
 
@@ -334,8 +334,8 @@ describe("KevinService", () => {
 
             const keyName = "key";
 
-            const childKeyPath = `${childEnvironment.id}.keys.${keyName}`;
-            const parentKeyPath = `${parentEnvironment.id}.keys.${keyName}`;
+            const childKeyPath = `kevin.${childEnvironment.id}.keys.${keyName}`;
+            const parentKeyPath = `kevin.${parentEnvironment.id}.keys.${keyName}`;
             when(providerMock.getValue(childKeyPath)).thenResolve(null);
             when(providerMock.getValue(parentKeyPath)).thenResolve(null);
 
@@ -381,7 +381,7 @@ describe("KevinService", () => {
             const keyName = "key";
             const keyValue = "value";
 
-            const fullKey = `${ENVIRONMENT_INFO.id}.keys.${keyName}`;
+            const fullKey = `kevin.${ENVIRONMENT_INFO.id}.keys.${keyName}`;
 
             when(providerMock.setValue(fullKey, keyValue)).thenResolve();
 
@@ -427,10 +427,10 @@ describe("KevinService", () => {
                 parentEnvironment: null
             }
 
-            when(providerMock.getKeys(`${ROOT_ENVIRONMENT_NAME}.keys.`)).thenResolve(KEYS);
+            when(providerMock.getKeys(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.`)).thenResolve(KEYS);
 
             for (let i = 0; i < KEYS.length; i++) {
-                when(providerMock.getValue(`${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[i]}`)).thenResolve(VALUES[i]);
+                when(providerMock.getValue(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[i]}`)).thenResolve(VALUES[i]);
             }
 
             const service = new KevinService(instance(providerMock), environmentInfo);
@@ -444,7 +444,7 @@ describe("KevinService", () => {
             for (let i = 0; i < KEYS.length; i++) {
                 expect(keys[i].value).toBe(VALUES[i]);
                 expect(keys[i].environmentInfo.id).toBe(ROOT_ENVIRONMENT_ID)
-                verify(providerMock.getValue(`${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[i]}`)).once();
+                verify(providerMock.getValue(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[i]}`)).once();
             }
 
 
@@ -480,18 +480,18 @@ describe("KevinService", () => {
                 parentEnvironment: childEnvironment
             }
 
-            when(providerMock.getKeys(`${ROOT_ENVIRONMENT_NAME}.keys.`)).thenResolve(KEYS);
+            when(providerMock.getKeys(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.`)).thenResolve(KEYS);
 
 
-            when(providerMock.getValue(`${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[0]}`)).thenResolve(VALUES[0]);
+            when(providerMock.getValue(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[0]}`)).thenResolve(VALUES[0]);
 
-            when(providerMock.getValue(`${childEnvironmentId}.keys.${KEYS[0]}`)).thenResolve(null);
-            when(providerMock.getValue(`${childEnvironmentId}.keys.${KEYS[1]}`)).thenResolve(VALUES[1]);
+            when(providerMock.getValue(`kevin.${childEnvironmentId}.keys.${KEYS[0]}`)).thenResolve(null);
+            when(providerMock.getValue(`kevin.${childEnvironmentId}.keys.${KEYS[1]}`)).thenResolve(VALUES[1]);
 
 
-            when(providerMock.getValue(`${grandChildEnvironmentId}.keys.${KEYS[0]}`)).thenResolve(null);
-            when(providerMock.getValue(`${grandChildEnvironmentId}.keys.${KEYS[1]}`)).thenResolve(null);
-            when(providerMock.getValue(`${grandChildEnvironmentId}.keys.${KEYS[2]}`)).thenResolve(VALUES[2]);
+            when(providerMock.getValue(`kevin.${grandChildEnvironmentId}.keys.${KEYS[0]}`)).thenResolve(null);
+            when(providerMock.getValue(`kevin.${grandChildEnvironmentId}.keys.${KEYS[1]}`)).thenResolve(null);
+            when(providerMock.getValue(`kevin.${grandChildEnvironmentId}.keys.${KEYS[2]}`)).thenResolve(VALUES[2]);
 
 
             const service = new KevinService(instance(providerMock), grandChildEnvironment);
@@ -504,15 +504,15 @@ describe("KevinService", () => {
 
             expect(keys[0].value).toBe(VALUES[0]);
             expect(keys[0].environmentInfo.id).toBe(ROOT_ENVIRONMENT_ID)
-            verify(providerMock.getValue(`${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[0]}`)).once();
+            verify(providerMock.getValue(`kevin.${ROOT_ENVIRONMENT_NAME}.keys.${KEYS[0]}`)).once();
 
             expect(keys[1].value).toBe(VALUES[1]);
             expect(keys[1].environmentInfo.id).toBe(childEnvironmentId)
-            verify(providerMock.getValue(`${childEnvironmentId}.keys.${KEYS[1]}`)).once();
+            verify(providerMock.getValue(`kevin.${childEnvironmentId}.keys.${KEYS[1]}`)).once();
 
             expect(keys[2].value).toBe(VALUES[2]);
             expect(keys[2].environmentInfo.id).toBe(grandChildEnvironmentId)
-            verify(providerMock.getValue(`${grandChildEnvironmentId}.keys.${KEYS[2]}`)).once();
+            verify(providerMock.getValue(`kevin.${grandChildEnvironmentId}.keys.${KEYS[2]}`)).once();
 
             verify(providerMock.getKeys(anyString())).once();
             verify(providerMock.getValue(anyString())).times(6);
@@ -725,15 +725,16 @@ describe("KevinService", () => {
             const keyName = "newKey";
             const keyValue = "newValue";
 
-            when(providerMock.getValue(`${rootEnvironment.id}.keys.${keyName}`)).thenResolve(null);
+            const keyFullPath = `kevin.${rootEnvironment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(null);
 
             const service = new KevinService(instance(providerMock), rootEnvironment);
 
             // Act
             await service.addKey(keyName, keyValue);
 
-            verify(providerMock.setValue(`${rootEnvironment.id}.keys.${keyName}`, keyValue)).once();
-            verify(providerMock.getValue(`${rootEnvironment.id}.keys.${keyName}`)).once();
+            verify(providerMock.setValue(keyFullPath, keyValue)).once();
+            verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).once();
             verify(providerMock.getValue(anyString())).once();
 
@@ -756,19 +757,21 @@ describe("KevinService", () => {
             const keyValue = "newValue";
             const defaultValue = "defaultValue";
 
-            when(providerMock.getValue(`${environment.id}.keys.${keyName}`)).thenResolve(null);
+            const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(null);
 
-            when(providerMock.getValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`)).thenResolve(null);
+            const rootKeyFullPath = `kevin.${ROOT_ENVIRONMENT_ID}.keys.${keyName}`;
+            when(providerMock.getValue(rootKeyFullPath)).thenResolve(null);
 
             const service = new KevinService(instance(providerMock), environment);
 
             // Act
             await service.addKey(keyName, keyValue, defaultValue);
 
-            verify(providerMock.setValue(`${environment.id}.keys.${keyName}`, keyValue)).once();
-            verify(providerMock.setValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`, defaultValue)).once();
-            verify(providerMock.getValue(`${environment.id}.keys.${keyName}`)).once();
-            verify(providerMock.getValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`)).once();
+            verify(providerMock.setValue(keyFullPath, keyValue)).once();
+            verify(providerMock.setValue(rootKeyFullPath, defaultValue)).once();
+            verify(providerMock.getValue(keyFullPath)).once();
+            verify(providerMock.getValue(rootKeyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).twice();
             verify(providerMock.getValue(anyString())).twice();
 
@@ -790,19 +793,21 @@ describe("KevinService", () => {
             const keyName = "newKey";
             const keyValue = "newValue";
 
-            when(providerMock.getValue(`${environment.id}.keys.${keyName}`)).thenResolve(null);
+            const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(null);
 
-            when(providerMock.getValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`)).thenResolve(null);
+            const rootKeyFullPath = `kevin.${ROOT_ENVIRONMENT_ID}.keys.${keyName}`;
+            when(providerMock.getValue(rootKeyFullPath)).thenResolve(null);
 
             const service = new KevinService(instance(providerMock), environment);
 
             // Act
             await service.addKey(keyName, keyValue);
 
-            verify(providerMock.setValue(`${environment.id}.keys.${keyName}`, keyValue)).once();
-            verify(providerMock.setValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`, "")).once();
-            verify(providerMock.getValue(`${environment.id}.keys.${keyName}`)).once();
-            verify(providerMock.getValue(`${ROOT_ENVIRONMENT_ID}.keys.${keyName}`)).once();
+            verify(providerMock.setValue(keyFullPath, keyValue)).once();
+            verify(providerMock.setValue(rootKeyFullPath, "")).once();
+            verify(providerMock.getValue(keyFullPath)).once();
+            verify(providerMock.getValue(rootKeyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).twice();
             verify(providerMock.getValue(anyString())).twice();
 
@@ -837,7 +842,8 @@ describe("KevinService", () => {
             const keyName = "newKey";
             const keyValue = "newValue";
 
-            when(providerMock.getValue(`${environment.id}.keys.${keyName}`)).thenResolve(keyValue);
+            const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(keyValue);
 
 
             const service = new KevinService(instance(providerMock), environment);
@@ -845,7 +851,7 @@ describe("KevinService", () => {
             // Act + Assert
            await expect(async() => await service.addKey(keyName, keyValue)).rejects.toThrow(DuplicateKeyFoundError);
 
-            verify(providerMock.getValue(`${environment.id}.keys.${keyName}`)).once();
+            verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
             verify(providerMock.getValue(anyString())).once();
         });
@@ -866,9 +872,9 @@ describe("KevinService", () => {
             const keyName = "newKey";
             const keyValue = "newValue";
 
-            const currentEnvironmentFullKey = `${environment.id}.keys.${keyName}`;
+            const currentEnvironmentFullKey = `kevin.${environment.id}.keys.${keyName}`;
 
-            const rootEnvironmentFullKey = `${ROOT_ENVIRONMENT_ID}.keys.${keyName}`;
+            const rootEnvironmentFullKey = `kevin.${ROOT_ENVIRONMENT_ID}.keys.${keyName}`;
             when(providerMock.getValue(currentEnvironmentFullKey)).thenResolve(null);
 
             when(providerMock.getValue(rootEnvironmentFullKey)).thenResolve(keyValue);

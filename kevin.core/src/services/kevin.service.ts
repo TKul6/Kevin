@@ -5,6 +5,7 @@ import { DuplicateEnvironmentFound } from '../errors/duplicate-environment-found
 const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
 const KEY_DELIMITER = ".keys.";
 const ROOT_ENVIRONMENT_NAME = "root";
+const KEYS_PREFIX = "kevin.";
 export class KevinService implements IKevinManager {
 
     private envInfo: IEnvironmentInformation;
@@ -88,7 +89,7 @@ export class KevinService implements IKevinManager {
 
         this.verifyEnvironmentIsSet();
 
-        const rootEnvironmentKeysPrefix = ROOT_ENVIRONMENT_NAME + KEY_DELIMITER;
+        const rootEnvironmentKeysPrefix = `${KEYS_PREFIX}${ROOT_ENVIRONMENT_NAME}${KEY_DELIMITER}`;
 
         const fullKeys = await this.provider.getKeys(rootEnvironmentKeysPrefix);
 
@@ -169,7 +170,7 @@ export class KevinService implements IKevinManager {
     }
 
     private getFullKeyByEnvironmentId(key: string, environmentId: string): string {
-        return environmentId + KEY_DELIMITER + key;
+        return `${KEYS_PREFIX}${environmentId}${KEY_DELIMITER}${key}`;
     }
 
     private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
