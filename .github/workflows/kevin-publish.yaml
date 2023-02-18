@@ -2,7 +2,7 @@ name: Publish Kevin Core
 on:
   push:
     branches: [ main ]
-     paths:
+    paths:
       - kevin.core/**
 env:
   MAJOR_VERSION: "1.0"

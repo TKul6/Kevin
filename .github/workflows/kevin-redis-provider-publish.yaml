@@ -1,4 +1,4 @@
-name: Publish Kevin Core
+name: Publish Redis Provider
 on:
   push:
     branches: [ main ]
