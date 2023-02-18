@@ -16,7 +16,8 @@
     "KV",
     "store",
     "configuration",
-    "redis"
+    "redis",
+    "key-value"
   ],
   "author": "TKul6",
   "license": "MIT",
