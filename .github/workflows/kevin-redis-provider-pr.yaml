@@ -1,4 +1,4 @@
-name: Kevin PR
+name: Kevin Redis Provider PR
 
 on:
   pull_request:
