@@ -2,8 +2,12 @@ name: Kevin PR
 
 on:
   pull_request:
+    paths:
+      - kevin.core/**
   push:
     branches: [ main ]
+    paths:
+      - kevin.core/**
   
     
 

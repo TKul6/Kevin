@@ -1,13 +1,13 @@
-name: Publish Kevin Core
+name: Publish Redis Provider
 on:
   push:
     branches: [ main ]
     paths:
-      - kevin.core/**
+      - kevin.redis/**
 env:
   MAJOR_VERSION: "1.0"
 jobs:
-  build:
+  build-kevin-core:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,10 +22,13 @@ jobs:
       - run: npm run build 
         name: Build Kevin Core
         working-directory: ./kevin.core
+  build-redis-provider:
+    runs-on: ubuntu-latest
+    steps:
       - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
-        name: Bump Kevin Core package's version.
-        working-directory: ./kevin.core    
+        name: Bump Redis provider package's version.
+        working-directory: ./kevin.redis    
       - run: npm publish --access=public
-        working-directory: ./kevin.core
+        working-directory: ./kevin.redis
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

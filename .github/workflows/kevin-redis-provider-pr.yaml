@@ -1,0 +1,44 @@
+name: Kevin Redis Provider PR
+
+on:
+  pull_request:
+    paths:
+      - kevin.redis/**
+  push:
+    branches: [ main ]
+    paths:
+      - kevin.redis/**
+
+jobs:
+  build_kevin_core:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name:  CI Kevin Core (Node.js ${{ matrix.node-version }})
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+        working-directory: ./kevin.core
+      - run: npm run build --if-present
+  build_redis-provider:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [17.x, 18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name:  CI Redis Provider (Node.js ${{ matrix.node-version }})
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+        working-directory: ./kevin.redis
+      - run: npm run build --if-present
+ 
