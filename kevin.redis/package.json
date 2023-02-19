@@ -29,7 +29,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@kevin-infra/core": "^1.0.0",
+    "@kevin-infra/core": "^1.0.24-alpha",
     "ioredis": "^4.27.7"
   },
   "workspaces": [
