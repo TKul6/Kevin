@@ -26,4 +26,8 @@ export class RedisProvider implements IProvider {
         return this.client.exists(key);
     }
 
+    getDelimiter(): string {
+        return ":";
+    }
+
 }
