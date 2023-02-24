@@ -4,5 +4,6 @@ export interface IProvider {
     getValueRange(keyPrefix: string): Promise<string[]>;
     getKeys(keyPrefix: string): Promise<string[]>;
     hasKey(key: string): Promise<boolean>;
+    getDelimiter(): string;
 
 }

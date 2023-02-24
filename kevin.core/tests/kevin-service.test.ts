@@ -16,6 +16,7 @@ describe("KevinService", () => {
 
     beforeEach(() => {
         providerMock = mock<IProvider>();
+        when(providerMock.getDelimiter()).thenReturn(".");
     })
 
     describe("constructor", () => {

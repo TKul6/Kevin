@@ -2,19 +2,26 @@ import { IEnvironmentMetaData, IEnvironmentInformation, IKevinManager, IKevinVal
 import { DuplicateKeyFoundError, EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
 import { default as cloneDeep } from "lodash.clonedeep"
 import { DuplicateEnvironmentFound } from '../errors/duplicate-environment-found.error';
-const KEVIN_INTERNAL_ENVIRONMENT_PREFIX = "kevin.internal.environments";
-const KEY_DELIMITER = ".keys.";
 const ROOT_ENVIRONMENT_NAME = "root";
-const KEYS_PREFIX = "kevin.";
+const DEFAULT_DELIMITER = ".";
 export class KevinService implements IKevinManager {
 
+    private delimiter: string;
     private envInfo: IEnvironmentInformation;
+    private internalEnvironmentsPrefix: string;
+    private keysDelimiter: string;
+    private keysPrefix: string;
     constructor(private provider: IProvider, info?: IEnvironmentInformation) {
         if (!provider) {
             throw new Error("Provider is required");
         }
 
         this.envInfo = info;
+        this.delimiter = provider.getDelimiter() || DEFAULT_DELIMITER;
+        this.internalEnvironmentsPrefix = ["kevin", "internal", "environments"].join(this.delimiter);
+        this.keysDelimiter = this.delimiter + "keys" + this.delimiter;
+        this.keysPrefix = "kevin" + this.delimiter;
+
     }
     async createRootEnvironment(): Promise<IEnvironmentInformation> {
         const data: IEnvironmentMetaData = {
@@ -23,7 +30,7 @@ export class KevinService implements IKevinManager {
             parentEnvironmentId: null,
         }
 
-        await this.provider.setValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${data.name}`, JSON.stringify(data));
+        await this.provider.setValue(`${this.internalEnvironmentsPrefix}${this.delimiter}${data.name}`, JSON.stringify(data));
 
         return { name: ROOT_ENVIRONMENT_NAME, id: ROOT_ENVIRONMENT_NAME, parentEnvironment: null }
 
@@ -31,13 +38,13 @@ export class KevinService implements IKevinManager {
 
     async getEnvironments(): Promise<IEnvironmentMetaData[]> {
 
-        const unparsedEnvironments = await this.provider.getValueRange(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".");
+        const unparsedEnvironments = await this.provider.getValueRange(this.internalEnvironmentsPrefix + this.delimiter);
 
         if (!unparsedEnvironments || unparsedEnvironments.length === 0) {
             return [];
         }
 
-        return unparsedEnvironments.map((unparsedEnvironment) => this.parseEnvironmentMetadata(unparsedEnvironment, KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".*"));
+        return unparsedEnvironments.map((unparsedEnvironment) => this.parseEnvironmentMetadata(unparsedEnvironment, this.internalEnvironmentsPrefix +  + this.delimiter + "*"));
 
     }
     async setCurrentEnvironment(environmentId: string): Promise<IEnvironmentInformation> {
@@ -89,7 +96,7 @@ export class KevinService implements IKevinManager {
 
         this.verifyEnvironmentIsSet();
 
-        const rootEnvironmentKeysPrefix = `${KEYS_PREFIX}${ROOT_ENVIRONMENT_NAME}${KEY_DELIMITER}`;
+        const rootEnvironmentKeysPrefix = `${this.keysPrefix}${ROOT_ENVIRONMENT_NAME}${this.keysDelimiter}`;
 
         const fullKeys = await this.provider.getKeys(rootEnvironmentKeysPrefix);
 
@@ -158,7 +165,7 @@ export class KevinService implements IKevinManager {
 
 
     private getFullEnvironmentKey(environmentId: string): string {
-        return `${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${environmentId}`;
+        return `${this.internalEnvironmentsPrefix}${this.delimiter}${environmentId}`;
     }
 
     private cleanName(name: string): string {
@@ -170,11 +177,11 @@ export class KevinService implements IKevinManager {
     }
 
     private getFullKeyByEnvironmentId(key: string, environmentId: string): string {
-        return `${KEYS_PREFIX}${environmentId}${KEY_DELIMITER}${key}`;
+        return `${this.keysPrefix}${environmentId}${this.keysDelimiter}${key}`;
     }
 
     private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
-        const data = await this.provider.getValue(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + "." + environmentId);
+        const data = await this.provider.getValue(this.internalEnvironmentsPrefix + this.delimiter + environmentId);
 
         if (!data) {
             throw new EnvironmentNotFoundError(environmentId);
@@ -203,4 +210,5 @@ export class KevinService implements IKevinManager {
             throw new EnvironmentNotSetError();
         }
     }
+
 }

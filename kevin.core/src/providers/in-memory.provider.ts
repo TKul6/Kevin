@@ -1,5 +1,8 @@
 import { IProvider } from "../interfaces";
 export class InMemoryProvider implements IProvider {
+    getDelimiter(): string {
+        return ".";
+    }
 
     private store = new Map<string, string>();
 
