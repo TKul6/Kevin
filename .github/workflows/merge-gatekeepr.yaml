@@ -8,7 +8,7 @@ on:
 jobs:
   merge-gatekeeper:
     runs-on: ubuntu-latest
-      permissions:
+    permissions:
       checks: read
       statuses: read
     steps:
