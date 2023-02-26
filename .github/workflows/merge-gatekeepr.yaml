@@ -8,7 +8,7 @@ on:
 jobs:
   merge-gatekeeper:
     runs-on: ubuntu-latest
-     permissions:
+      permissions:
       checks: read
       statuses: read
     steps:
@@ -16,6 +16,6 @@ jobs:
         # NOTE: v1 is updated to reflect the latest v1.x.y. Please use any tag/branch that suits your needs:
         #       https://github.com/upsidr/merge-gatekeeper/tags
         #       https://github.com/upsidr/merge-gatekeeper/branches
-        uses: upsidr/merge-gatekeeper@v1.2.1
+        uses: upsidr/merge-gatekeeper@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
