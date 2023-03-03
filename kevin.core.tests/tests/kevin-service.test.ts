@@ -1,8 +1,8 @@
 import 'jest';
-import { IEnvironmentInformation, IEnvironmentMetaData, IProvider } from '../src/interfaces';
-import { KevinService } from '../src/services/kevin.service';
+import { IEnvironmentInformation, IEnvironmentMetaData, IProvider } from '@kevin-infra/core/interfaces';
+import { KevinService } from '@kevin-infra/core/services';
 import { anyString, anything, instance, mock, verify, when } from "ts-mockito"
-import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError, DuplicateEnvironmentFound, DuplicateKeyFoundError } from '../src/errors';
+import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError, DuplicateEnvironmentFound, DuplicateKeyFoundError } from '@kevin-infra/core/errors';
 
 const ROOT_ENVIRONMENT_NAME = "root";
 const ROOT_ENVIRONMENT_ID = "root";
@@ -218,7 +218,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow(EnvironmentNotFoundError);
+            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow("Environment not found");
 
             // Assert
 
@@ -235,7 +235,8 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow(InvalidEnvironmentInfoError);
+            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects
+                .toThrow("Failed to initialize environment info. Please make sure the data in the repository is valid for environment " + ROOT_ENVIRONMENT_ID);
 
             // Assert
 
@@ -360,7 +361,8 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.getValue(keyName)).rejects.toThrow(EnvironmentNotSetError);
+            await expect(() => service.getValue(keyName)).rejects
+                .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -405,7 +407,8 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setValue(keyName, keyValue)).toThrow(EnvironmentNotSetError);
+            await expect(() => service.setValue(keyName, keyValue))
+                .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -527,7 +530,8 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.getEnvironmentData()).rejects.toThrow(EnvironmentNotSetError);
+            await expect(() => service.getEnvironmentData()).rejects
+                .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
             verify(providerMock.getKeys(anyString())).never();
@@ -628,7 +632,7 @@ describe("KevinService", () => {
 
             // Act + Assert
             await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, PARENT_ENVIRONMENT_ID))
-                .rejects.toThrow(EnvironmentNotFoundError);
+                .rejects.toThrow("Environment not found");
 
             verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${PARENT_ENVIRONMENT_ID}`)).once();
 
@@ -644,7 +648,7 @@ describe("KevinService", () => {
 
             // Act + Assert
             await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME))
-                .rejects.toThrow(EnvironmentNotSetError);
+                .rejects.toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             verify(providerMock.hasKey(anyString())).never();
             verify(providerMock.setValue(anyString(), anything())).never();
@@ -662,7 +666,7 @@ describe("KevinService", () => {
 
             // Act + Assert
             await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME, ROOT_ENVIRONMENT_ID))
-                .rejects.toThrow(DuplicateEnvironmentFound);
+                .rejects.toThrow("Duplicate environment found");
 
             // Assert
 
@@ -816,11 +820,12 @@ describe("KevinService", () => {
 
         it("should handle no current environment is set.", async () => {
             // Arrange
-       
+
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            expect(async () => await service.addKey("anyKey", "anyValue")).rejects.toThrow(EnvironmentNotSetError);;
+            await expect(async () => await service.addKey("anyKey", "anyValue")).rejects
+                .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             verify(providerMock.setValue(anyString(), anyString())).never();
             verify(providerMock.getValue(anyString())).never();
@@ -850,7 +855,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-           await expect(async() => await service.addKey(keyName, keyValue)).rejects.toThrow(DuplicateKeyFoundError);
+            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrow("Duplicate environment found");
 
             verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -883,7 +888,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-         await  expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrowError(DuplicateKeyFoundError);
+            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrowError("Duplicate environment found");
 
 
             // Assert

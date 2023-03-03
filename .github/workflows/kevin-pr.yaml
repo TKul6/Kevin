@@ -4,10 +4,12 @@ on:
   pull_request:
     paths:
       - kevin.core/**
+      - kevin.core.tests/**
   push:
     branches: [ main ]
     paths:
       - kevin.core/**
+      - kevin.core.tests/**
   
     
 
