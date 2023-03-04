@@ -31,11 +31,13 @@ jobs:
         name: Install Root Dependencies
       - run: npm ci
         working-directory: ./kevin.core
+        name: Install Core Dependencies
       - run: npm run lint
         working-directory: ./kevin.core
       - run: npm run build --if-present
         working-directory: ./kevin.core
       - run: npm ci
         working-directory: ./kevin.core.tests
+        name: Install test dependencies
       - run: npm test
         working-directory: ./kevin.core.tests
