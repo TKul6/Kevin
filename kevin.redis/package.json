@@ -35,6 +35,7 @@
     "ioredis": "^4.27.7"
   },
   "workspaces": [
-    "../kevin.core"
+    "../kevin.core",
+    "../"
   ]
 }
