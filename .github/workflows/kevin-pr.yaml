@@ -28,6 +28,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+        name: Install Root Dependencies
+      - run: npm ci
         working-directory: ./kevin.core
       - run: npm run lint
         working-directory: ./kevin.core

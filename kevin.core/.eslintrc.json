@@ -3,10 +3,7 @@
         "browser": true,
         "es2021": true
     },
-    "extends": [
-        "standard-with-typescript",
-        "prettier"
-    ],
+    "extends": "../.eslintrc.json",
     "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -15,9 +12,5 @@
             "tsconfig.json"
         ]
     },
-    "rules": {
-        "@typescript-eslint/prefer-nullish-coalescing": "off",
-        "@typescript-eslint/strict-boolean-expressions": "off",
-        "@typescript-eslint/method-signature-style": "off"
-    }
+    "rules": {}
 }
