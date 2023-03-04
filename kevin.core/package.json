@@ -6,6 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "npm test --prefix ../kevin.core.tests",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts --fix src",
     "build": "tsc"
   },
   "exports": {
@@ -44,11 +46,10 @@
   },
   "homepage": "https://github.com/TKul6/Kevin#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
-    "typescript": "^4.9.4"
+    
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0"
   }
 }
-  

@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts --fix src"
   },
   "repository": {
     "type": "git",
@@ -30,9 +32,11 @@
   },
   "dependencies": {
     "@kevin-infra/core": "^1.0.24-alpha",
-    "ioredis": "^4.27.7"
+    "ioredis": "^4.27.7",
+    "@kevin-infra/kevin": "^1.0.0"
   },
   "workspaces": [
-    "../kevin.core"
+    "../kevin.core",
+    "../kevin"
   ]
 }

@@ -1,4 +1,4 @@
-import {  IEnvironmentInformation } from "./environment-data";
+import {  type IEnvironmentInformation } from "./environment-data";
 
 export interface IKevinValue {
     value: string;

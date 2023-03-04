@@ -1,7 +1,7 @@
-import { IKevinValue } from "../interfaces";
+import { type IKevinValue } from "../interfaces";
 
 export class DuplicateKeyFoundError extends Error {
-    constructor(private info: IKevinValue) {
+    constructor(private readonly info: IKevinValue) {
         super("Duplicate environment found");
     }
 }
