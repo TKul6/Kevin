@@ -407,7 +407,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setValue(keyName, keyValue))
+            await expect(async () => await service.setValue(keyName, keyValue)).rejects
                 .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
