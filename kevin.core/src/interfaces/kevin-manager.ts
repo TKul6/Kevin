@@ -1,16 +1,16 @@
-import { IEnvironmentMetaData, IEnvironmentInformation } from "./environment-data";
-import { IKevinValue } from "./kevin-value";
+import { type IEnvironmentMetaData, type IEnvironmentInformation } from "./environment-data";
+import { type IKevinValue } from "./kevin-value";
 
 export interface IKevinManager {
-    getEnvironments(): Promise<Array<IEnvironmentMetaData>>;
+    getEnvironments(): Promise<IEnvironmentMetaData[]>;
     setCurrentEnvironment(environmentId: string): Promise<IEnvironmentInformation>;
-    getEnvironmentData(): Promise<Array<IKevinValue>>;
-    getValue<T>(key: string): Promise<IKevinValue>;
+    getEnvironmentData(): Promise<IKevinValue[]>;
+    getValue(key: string): Promise<IKevinValue>;
     setValue(key: string, value: string): Promise<void>;
     createRootEnvironment(): Promise<IEnvironmentInformation>;
     createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentMetaData>;
     addKey(key: string, value: string, defaultValue?): Promise<void>;
-    
+
 
 
 }
