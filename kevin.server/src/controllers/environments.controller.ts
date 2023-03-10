@@ -1,35 +1,32 @@
-import { IKevinManager } from '@kevin-infra/core/interfaces';
-import { Param, Body, Get, Post, Put, Delete, JsonController } from 'routing-controllers';
+import {  type IEnvironmentInformation, type IEnvironmentMetaData, type IKevinManager } from '@kevin-infra/core/interfaces';
+import { Param, Body, Get, Post, JsonController } from 'routing-controllers';
 import {Service, Inject} from 'typedi';
+// eslint-disable-next-line 
+import { CreateEnvironmentModel } from '../models/create-environment.model';
 @JsonController("/environments")
 @Service()
 export class EnvironmentsController {
 
     constructor(@Inject("kevin.service") private readonly kevinService: IKevinManager) {
     }
-//   @Get()
-//   public async () {
-//     return 'This action returns all users';
-//   }
 
-//   @Get('/users/:id')
-//   getOne(@Param('id') id: number) {
-//     return 'This action returns user #' + id;
-//   }
+  @Get()
+  public async getEnvironments(): Promise<IEnvironmentMetaData[]> {
+    return await this.kevinService.getEnvironments();
+  }
 
-   @Post()
-   post(@Body() environment: any) {
-     return 'Saving user...';
+@Post()
+   async createRootEnvironment(): Promise<IEnvironmentInformation> {
+   
+    return await this.kevinService.createRootEnvironment();
    }
 
-//   @Put('/users/:id')
-//   put(@Param('id') id: number, @Body() user: any) {
-//     return 'Updating a user...';
-//   }
 
-//   @Delete('/users/:id')
-//   remove(@Param('id') id: number) {
-//     return 'Removing user...';
-//   }
+   @Post("/:id")
+   async createEnvironment(@Body() data: CreateEnvironmentModel, @Param("id") id: string): Promise<IEnvironmentMetaData> {
+   
+    return await this.kevinService.createEnvironment(data.environmentName, id);
+   }
+
 }
 
