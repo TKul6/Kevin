@@ -9,9 +9,9 @@
     "build": "tsc",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts --fix src",
-    "ci:root": "npm ci --prefix ../../kevin",
+    "ci:root": "npm ci --prefix ../",
     "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core",
-    "build:allDependencies": "ci:root && npm run build:core"
+    "build:allDependencies": "npm run ci:root && npm run build:core"
   },
   "repository": {
     "type": "git",
