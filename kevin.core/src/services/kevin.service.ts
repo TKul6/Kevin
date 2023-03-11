@@ -86,7 +86,7 @@ export class KevinService implements IKevinManager {
     if (!value) {
       return null;
     }
-    return { value, environmentInfo: currentEnvironment }
+    return { value, environmentInfo: currentEnvironment, key }
 
   }
 

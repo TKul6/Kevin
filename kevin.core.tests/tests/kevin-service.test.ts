@@ -1,8 +1,7 @@
 import 'jest';
-import { IEnvironmentInformation, IEnvironmentMetaData, IProvider } from '@kevin-infra/core/interfaces';
+import { type IEnvironmentInformation,  type IEnvironmentMetaData, type IProvider } from '@kevin-infra/core/interfaces';
 import { KevinService } from '@kevin-infra/core/services';
 import { anyString, anything, instance, mock, verify, when } from "ts-mockito"
-import { EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError, DuplicateEnvironmentFound, DuplicateKeyFoundError } from '@kevin-infra/core/errors';
 
 const ROOT_ENVIRONMENT_NAME = "root";
 const ROOT_ENVIRONMENT_ID = "root";
@@ -269,6 +268,7 @@ describe("KevinService", () => {
             const result = await service.getValue(keyName);
 
             // Assert
+            expect(result.key).toBe(keyName);
             expect(result.value).toBe(keyValue);
             expect(result.environmentInfo.id).toBe(ENVIRONMENT_INFO.id);
             verify(providerMock.getValue(keyPath)).once();
@@ -308,6 +308,7 @@ describe("KevinService", () => {
             const result = await service.getValue(keyName);
 
             // Assert
+            expect(result.key).toBe(keyName);
             expect(result.value).toBe(keyValue);
             expect(result.environmentInfo.id).toBe(parentEnvironment.id);
             verify(providerMock.getValue(childKeyPath)).once();
