@@ -7,9 +7,11 @@
     "start": "nodemon --watch './**/*.ts' --exec ts-node ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "lint": "npx eslint --ext .ts src",
+    "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts --fix src",
-    "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core"
+    "ci:root": "npm ci --prefix ../../kevin",
+    "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core",
+    "build:allDependencies": "npm run ci:root && npm run build:core"
   },
   "repository": {
     "type": "git",
