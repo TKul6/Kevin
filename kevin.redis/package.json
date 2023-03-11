@@ -2,8 +2,8 @@
   "name": "@kevin-infra/redis",
   "version": "1.0.0",
   "description": "A redis provider for Kevin.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/redis.provider.js",
+  "types": "dist/redis.provider.d.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .ts src",
