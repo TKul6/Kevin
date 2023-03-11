@@ -25,9 +25,9 @@ jobs:
       - run: npm run build:allDependencies
         working-directory: ./kevin.redis
         name: Building dependencies
-      - run: Install Redis Provider dependencies
+      - run: npm ci
         working-directory: ./kevin.redis
-        name: Building Dependencies
+        name: Install Redis Provider dependencies
       - run: npm run build --if-present
         working-directory: ./kevin.redis
         name: Build Redis Provider
