@@ -22,12 +22,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm run build:allDependencies
+        working-directory: ./kevin.server
+        name: Build All Dependencies
       - run: npm ci
-        working-directory: ./kevin.core
-        name: Building Kevin Core
-      - run: npm run build --if-present
+        name: Kevin-Server install Dependencies
         working-directory: ./kevin.server
       - run: npm run build --if-present
+        name: Build Kevin Server
         working-directory: ./kevin.server
       - run: npm run lint
         working-directory: ./kevin.server
