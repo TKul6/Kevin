@@ -4,7 +4,6 @@ import { KevinService } from '@kevin-infra/core/services';
 import { createExpressServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
 import Redis from 'ioredis';
-import {join} from 'path';
 import { EnvironmentKeysController } from './controllers/kv.controller';
 import { EnvironmentsController } from './controllers/environments.controller';
 
