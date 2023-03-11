@@ -12,6 +12,7 @@ on:
 
 jobs:
   build_kevin_server:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [17.x, 18.x]
