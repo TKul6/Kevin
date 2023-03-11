@@ -1,7 +1,6 @@
 import {  type IEnvironmentInformation, type IEnvironmentMetaData, type IKevinManager } from '@kevin-infra/core/interfaces';
 import { Param, Body, Get, Post, JsonController } from 'routing-controllers';
 import {Service, Inject} from 'typedi';
-// eslint-disable-next-line 
 import { CreateEnvironmentModel } from '../models/create-environment.model';
 @JsonController("/environments")
 @Service()

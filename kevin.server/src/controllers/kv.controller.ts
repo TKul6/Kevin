@@ -1,8 +1,8 @@
 import { Get, JsonController, Param, Put, Body, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { type IKevinManager, type IKevinValue } from "@kevin-infra/core/interfaces";
-import { type ValueModel } from "../models/value.model";
-import { type KeyValueModel } from "../models/key-value.model";
+import {  ValueModel } from "../models/value.model";
+import {  KeyValueModel } from "../models/key-value.model";
 
 @JsonController("/environments/:id/keys")
 @Service()
