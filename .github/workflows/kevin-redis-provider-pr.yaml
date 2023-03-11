@@ -22,14 +22,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm run build:allDependencies
+        working-directory: ./kevin.redis
+        name: Building dependencies
       - run: npm ci
-        working-directory: ./kevin.core
-        name: Building Kevin Core
+        working-directory: ./kevin.redis
+        name: Install Redis Provider dependencies
       - run: npm run build --if-present
         working-directory: ./kevin.redis
-      - run: npm run build --if-present
-        working-directory: ./kevin.redis
+        name: Build Redis Provider
       - run: npm run lint
         working-directory: ./kevin.redis
+        name: Lint Redis Provider
 
  
