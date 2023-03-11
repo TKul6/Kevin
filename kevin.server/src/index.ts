@@ -11,11 +11,10 @@ Container.set('kevin.service', new KevinService(new RedisProvider(new Redis("red
 
 useContainer(Container);
 
-// creates express app, registers all controller routes and returns you express app instance
 const app = createExpressServer({
   controllers: [EnvironmentKeysController, EnvironmentsController]
 });
 
-// run express application on port 3000
+
 app.listen(3000);
 console.log("App is running on port 3000");
