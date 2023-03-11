@@ -12,6 +12,7 @@ on:
 
 jobs:
   build_redis_provider:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [17.x, 18.x]
