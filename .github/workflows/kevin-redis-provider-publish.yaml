@@ -16,18 +16,15 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-        name: Kevin Core - Install Dependencies
-        working-directory: ./kevin.core
-      - run: npm run build 
-        name: Kevin Core - Build
-        working-directory: ./kevin.core
-      - run: npm ci
-        name: Redis Provider - Install Dependencies
+      - run: npm run build:allDependencies
         working-directory: ./kevin.redis
-      - run: npm run build 
-        name: Redis Provider - Build
-        working-directory: ./kevin.redis    
+        name: Building dependencies
+      - run: npm ci
+        working-directory: ./kevin.redis
+        name: Install Redis Provider dependencies
+      - run: npm run build --if-present
+        working-directory: ./kevin.redis
+        name: Build Redis Provider
       - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
         name: Bump Redis provider package's version.
         working-directory: ./kevin.redis    
