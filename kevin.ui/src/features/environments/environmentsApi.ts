@@ -7,12 +7,10 @@ export async function getEnvironments(): Promise<Array<IEnvironmentMetaData>> {
 const response = await fetch("http://localhost:3000/environments");
 
 if(response.status === 200) {
-  console.log("success");
 const environments = await response.json();
   return environments;
 }
 
-console.log("failed");
 throw new Error("Failed to get environments");
 
 }

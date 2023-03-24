@@ -44,7 +44,7 @@ export const environmentsSlice = createSlice({
       })
       .addCase(loadEnvironments.fulfilled, (state, action) => {
         state.status = 'idle';
-        console.log("action.payload: " + action.payload);
+        console.log("action.payload: " + JSON.stringify(action.payload));
         state.environments = action.payload;
       })
       .addCase(loadEnvironments.rejected, (state) => {
