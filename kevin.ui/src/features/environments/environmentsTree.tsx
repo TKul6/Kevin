@@ -5,7 +5,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import styles from './environmentsTree.module.css';
-import { loadEnvironments } from './environmentsSlice';
 import { IEnvironmentMetaData } from '@kevin-infra/core/interfaces';
 import Divider from '@mui/material/Divider';
 
@@ -45,15 +44,8 @@ if(environments.length > 0) {
       </div>
     </div>);
       } else {
-        return (<div className={styles.row}>
-
-        <button
-          className={styles.asyncButton}
-          onClick={() => dispatch(loadEnvironments())}
-        >
-          Load environments
-        </button>
-
+        return (<div>
+Loading...
       </div>
     )
       }
