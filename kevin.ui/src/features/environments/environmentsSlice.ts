@@ -1,23 +1,20 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 import { getEnvironments } from './environmentsApi';
 import  {IEnvironmentMetaData} from "@kevin-infra/core/interfaces"
 
 export interface EnvironmentsState {
   environments: Array<IEnvironmentMetaData>,
   status: 'idle' | 'loading' | 'failed';
+  selectedEnvironment: IEnvironmentMetaData | null;
 }
 
 const initialState: EnvironmentsState = {
   environments: [],
-  status: "idle"
+  status: "idle",
+  selectedEnvironment: null
 };
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
 export const loadEnvironments = createAsyncThunk<Array<IEnvironmentMetaData>>(
   'environments/getEnvironments',
   async (r) => {
@@ -27,6 +24,8 @@ export const loadEnvironments = createAsyncThunk<Array<IEnvironmentMetaData>>(
     return environments;
       }
 );
+
+export const selectEnvironment = createAction<string>('environments/selectEnvironment');
 
 export const environmentsSlice = createSlice({
   name: 'environments',
@@ -49,7 +48,13 @@ export const environmentsSlice = createSlice({
       })
       .addCase(loadEnvironments.rejected, (state) => {
         state.status = 'failed';
-      });
+      })
+      .addCase(selectEnvironment, (state, action) => {
+        const selectedEnvironment = state.environments.find(e => e.name === action.payload);
+        if(selectedEnvironment) {
+          state.selectedEnvironment = selectedEnvironment;
+        }
+      })
   },
 });
 
