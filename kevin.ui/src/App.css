@@ -1,0 +1,29 @@
+
+.app{
+
+margin: 10px;
+
+
+
+}
+
+.app-logo {
+  height: 80px;
+  pointer-events: none;
+}
+
+.app-content {
+  padding-top:20px;
+  display: flex;
+  flex-direction: rows;
+  width: 100%;
+}
+
+.header {
+  font-weight: 500;
+  padding-bottom: 10px;
+}
+
+
+
+
