@@ -14,9 +14,9 @@ constructor( @Inject("kevin.service")private readonly kevinService: IKevinManage
 @Get()
 public  async getAllKeys(@Param("id") environmentId: string): Promise<IKevinValue[]> {
 
-    await this.kevinService.setCurrentEnvironment(environmentId);
-    return await this.kevinService.getEnvironmentData();
-}
+        await this.kevinService.setCurrentEnvironment(environmentId);
+        return await this.kevinService.getEnvironmentData();
+    }
 
 @Post()
 public async addKey(@Param("id") environmentId: string, @Body() kvModel: KeyValueModel): Promise<void> {
@@ -26,11 +26,17 @@ public async addKey(@Param("id") environmentId: string, @Body() kvModel: KeyValu
     return null;
 }
 
-@Put("/:key")
-public async setKey(@Param("id") environmentId: string, @Param("key") key: string, @Body() valueModel: ValueModel): Promise<any> {
-    await this.kevinService.setCurrentEnvironment(environmentId);
-    await this.kevinService.setValue(key, valueModel.value);
+    @Put("/:key")
+    public async setKey(@Param("id") environmentId: string, @Param("key") key: string, @Body() valueModel: ValueModel): Promise<IKevinValue> {
+        const envInfo = await this.kevinService.setCurrentEnvironment(environmentId);
 
-    return null;
-}
+        await this.kevinService.setValue(key, valueModel.value);
+
+        const result: IKevinValue = {
+            key,
+            value: valueModel.value,
+            environmentInfo: envInfo
+        }
+        return result;
+    }
 }

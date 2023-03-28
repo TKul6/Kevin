@@ -1,0 +1,22 @@
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.item {
+    padding-top: 10px;
+}
+
+.inheritItem {
+    opacity: 0.5;
+}
+
+.actionsColumn {
+    width: 100px;
+}
+
+.actionItem div {
+    padding-right: 10px;
+}
+
