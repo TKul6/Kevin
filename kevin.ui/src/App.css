@@ -1,10 +1,6 @@
 
 .app{
-
 margin: 10px;
-
-
-
 }
 
 .app-logo {
@@ -13,10 +9,9 @@ margin: 10px;
 }
 
 .app-content {
-  padding-top:20px;
+  padding:16px 10px;
   display: flex;
-  flex-direction: rows;
-  width: 100%;
+  flex-direction: row;
 }
 
 .header {
@@ -24,6 +19,23 @@ margin: 10px;
   padding-bottom: 10px;
 }
 
+.verticalDivider {
+  width: 16px;
+}
 
+th {
+  background-color: rgba(0, 0, 0, 0.03) 
+}
 
+.warnLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffb100;
+}
+
+.dialog-container {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+}
 

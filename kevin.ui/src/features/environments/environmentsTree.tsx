@@ -7,11 +7,12 @@ import TreeItem from '@mui/lab/TreeItem';
 import styles from './environmentsTree.module.css';
 import { IEnvironmentMetaData } from '@kevin-infra/core/interfaces';
 import Divider from '@mui/material/Divider';
+import { selectEnvironment } from './environmentsSlice';
 
 export function renderBranch(allEnvironments: Array<IEnvironmentMetaData>, currentEnvironment?: IEnvironmentMetaData) {
 
   if(!currentEnvironment) {
-    return (<div></div>)
+    return (<div>Failed to find root node!</div>)
   }
   return (
     <TreeItem nodeId={currentEnvironment.id} label={currentEnvironment.name}>
@@ -34,6 +35,7 @@ if(environments.length > 0) {
       <div className={styles.item}>
         <div>
           <TreeView 
+          onNodeSelect={(_: any, nodeId: string) => dispatch(selectEnvironment(nodeId))}
           aria-label="Environments"
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
