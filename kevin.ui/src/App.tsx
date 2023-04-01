@@ -10,6 +10,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { EnvironmentInfo } from './features/environmentInfo/environmentInfo';
+import { AppToast } from './features/system/appToast';
 function App() {
 
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ function App() {
         <EnvironmentsTree />
         <div className="verticalDivider"></div>
         <EnvironmentInfo />
+        <AppToast />
         
      </div>
     </div>
