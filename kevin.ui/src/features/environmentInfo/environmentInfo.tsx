@@ -119,7 +119,7 @@ const [open, setOpen] = React.useState(false);
           {editedKevinValue?.environmentInfo.id !== environmentInfo.selectedEnvironmentId&&<div className="warnLabel">Setting a new value will immediately stop the value inheritance.</div>}
         </DialogContent>
         <DialogActions>
-          <Button onClick={setValue}>Let's go Kevin</Button>
+          <Button onClick={setValue} variant="contained">Let's go Kevin</Button>
           <Button onClick={closeSetValueModal}>Cancel</Button>
         </DialogActions>
       </Dialog>
