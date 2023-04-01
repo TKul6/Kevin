@@ -36,8 +36,6 @@ export async function setEnvironmentKey(environmentId: string, key: string, valu
 
   const url = `${base}/environments/${encodeURIComponent(environmentId)}/keys/${encodeURIComponent(key)}`;
 
-  console.log(value);
-
   const response = await fetch(url, { method: 'PUT', body: JSON.stringify({ value: value }), headers: { 'Content-Type': 'application/json' }, });
 
   if (response.status === 200) {

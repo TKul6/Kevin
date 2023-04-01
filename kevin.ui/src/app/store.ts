@@ -1,15 +1,16 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { keysLoaderMiddleware } from '../features/environmentInfo/environmentInfoMiddlewares';
+import { keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddleware } from '../features/environmentInfo/environmentInfoMiddlewares';
 import environmentInfoSlice from '../features/environmentInfo/environmentInfoSlice';
-
+import systemSlice from '../features/system/systemSlice';
 import environmentsReducer from '../features/environments/environmentsSlice';
 
 export const store = configureStore({
   reducer: {
     environments: environmentsReducer,
-    environmentInfo: environmentInfoSlice
+    environmentInfo: environmentInfoSlice,
+    system: systemSlice
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(keysLoaderMiddleware.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(keysLoaderMiddleware.middleware).prepend(SetValueSuccessMiddleware.middleware).prepend(SetValueFailedMiddleware.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
