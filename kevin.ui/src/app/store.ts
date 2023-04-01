@@ -3,6 +3,7 @@ import { keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddlewa
 import environmentInfoSlice from '../features/environmentInfo/environmentInfoSlice';
 import systemSlice from '../features/system/systemSlice';
 import environmentsReducer from '../features/environments/environmentsSlice';
+import { createEnvironmentFailed, createEnvironmentSucceeded } from '../features/environments/environmentsMiddlewares';
 
 export const store = configureStore({
   reducer: {
@@ -10,7 +11,12 @@ export const store = configureStore({
     environmentInfo: environmentInfoSlice,
     system: systemSlice
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(keysLoaderMiddleware.middleware).prepend(SetValueSuccessMiddleware.middleware).prepend(SetValueFailedMiddleware.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+    .prepend(keysLoaderMiddleware.middleware)
+    .prepend(SetValueSuccessMiddleware.middleware)
+    .prepend(SetValueFailedMiddleware.middleware)
+    .prepend(createEnvironmentFailed.middleware)
+    .prepend(createEnvironmentSucceeded.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
