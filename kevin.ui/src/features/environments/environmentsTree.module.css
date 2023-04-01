@@ -8,3 +8,22 @@
 .item {
     padding-top: 10px;
 }
+
+.treeItemContainer {
+    display: flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.commandsContainer {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+    padding-right: 10px;
+}
+
+.treeItemContainer:hover .commandsContainer {
+    opacity: 1;
+}
