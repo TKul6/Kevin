@@ -13,23 +13,7 @@
   flex-direction: row;
 }
 
-.header {
-  display: flex;
-  padding: 10px 0px;
-  align-items: center;
-  min-height: 40px;
-}
 
-
-.headerText {
-  font-weight: 500;
-  flex: 1;
-  padding-left: 10px;
-}
-
-.headerCommands {
-  padding-right: 10px;
-}
 
 .verticalDivider {
   width: 16px;

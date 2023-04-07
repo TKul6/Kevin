@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import { CreateEnvironmentModel } from './createEnvironmentModal';
+import { Header } from '../../app/components/header/header';
 
 
 
@@ -61,7 +62,7 @@ const tree  = (<TreeView
     return (
      <div className="treeComponentContainer">
       <div className={styles.contentContainer}>
-        <div className="header"><div className="headerText">Environments Tree</div></div>
+       <Header title='Environments' />
         <Divider></Divider>
         <div className={styles.item}>
           {environments.length > 0 ? tree : <div>Empty State</div>}

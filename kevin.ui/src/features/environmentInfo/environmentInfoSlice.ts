@@ -41,6 +41,8 @@ export const setKeyValue = createAsyncThunk<IKevinValue, EditValueModel>('enviro
 
 export const selectKeyValueForEdit = createAction<IKevinValue>('environmentInfo/selectKeyValueForEdit');
 
+export const openCreateKeyDialog = createAction<string>('environmentInfo/openCreateKeyDialog');
+
 export const environmentInfoSlice = createSlice({
     name: 'environmentInfo',
     initialState,
