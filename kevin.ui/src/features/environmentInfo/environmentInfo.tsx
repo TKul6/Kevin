@@ -65,7 +65,13 @@ const [open, setOpen] = React.useState(false);
 
   return (
     <div className={styles.contentContainer}>
-      <div className="header">Environment Info</div>
+      <div className="header">
+        <div className="headerText">Environment Info
+        </div>
+        <div className="headerCommands">
+          <Button variant="contained">create</Button>
+        </div>
+        </div>
       <Divider></Divider>
       <div className={styles.item}>
 

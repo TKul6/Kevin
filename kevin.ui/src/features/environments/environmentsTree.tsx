@@ -61,7 +61,7 @@ const tree  = (<TreeView
     return (
      <div className="treeComponentContainer">
       <div className={styles.contentContainer}>
-        <div className="header">Environments Tree</div>
+        <div className="header"><div className="headerText">Environments Tree</div></div>
         <Divider></Divider>
         <div className={styles.item}>
           {environments.length > 0 ? tree : <div>Empty State</div>}
