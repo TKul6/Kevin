@@ -11,7 +11,7 @@ let newValue = "";
 const createEnvModal = useAppSelector(selectCreateEnvironmentModel);
 const environments = useAppSelector(selectEnvironments);
 function closeModal() {
-    dispatch(closeCreateEnvironmentDialog)
+    dispatch(closeCreateEnvironmentDialog())
 }
 
 // TODO: move it to some more generic area.
