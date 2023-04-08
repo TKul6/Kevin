@@ -1,0 +1,9 @@
+.bottomSection {
+    padding-top: 16px;
+    font-size: smaller;
+}
+
+.flexCenter {
+    display: flex;
+    align-items: center;
+}

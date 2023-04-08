@@ -12,47 +12,49 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { selectEditedKevinValue, selectEnvironmentInfo, selectKeyValueForEdit, setKeyValue } from './environmentInfoSlice';
+import { openAddKeyDialog, selectEditedKevinValue, selectEnvironmentInfo, selectKeyValueForEdit, setKeyValue } from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import Tooltip from '@mui/material/Tooltip';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material';
 import { selectEnvironments } from '../environments/environmentsSlice';
+import { Header } from '../../app/components/header/header';
+import { AddKeyDialog } from './dialogs/addKeyDialog';
 
 
-  
+
 
 
 export function EnvironmentInfo() {
 
 
-let newValue = '';
+  let newValue = '';
   const dispatch = useAppDispatch();
   function closeSetValueModal() {
     newValue = '';
-  setOpen(false);
-}
+    setOpen(false);
+  }
 
-function openSetValueModal(info: IKevinValue) {
-  dispatch(selectKeyValueForEdit(info));
-  setOpen(true);
-}
+  function openSetValueModal(info: IKevinValue) {
+    dispatch(selectKeyValueForEdit(info));
+    setOpen(true);
+  }
 
-function setValue() {
+  function setValue() {
 
-  dispatch(setKeyValue({newValue: newValue, existingValue: environmentInfo.editedKevinValue, environmentId: environmentInfo.selectedEnvironmentId}));
-  closeSetValueModal();
-}
+    dispatch(setKeyValue({ newValue: newValue, existingValue: environmentInfo.editedKevinValue, environmentId: environmentInfo.selectedEnvironmentId }));
+    closeSetValueModal();
+  }
 
-function getEnvironmentName(environmentId: string) {
+  function getEnvironmentName(environmentId: string) {
 
 
-  const environment = environments.find((env) => env.id === environmentId);
-  return environment ? environment.name : '';
-}
+    const environment = environments.find((env) => env.id === environmentId);
+    return environment ? environment.name : '';
+  }
 
-const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const environmentInfo = useAppSelector(selectEnvironmentInfo);
   const editedKevinValue = useAppSelector(selectEditedKevinValue);
@@ -65,7 +67,7 @@ const [open, setOpen] = React.useState(false);
 
   return (
     <div className={styles.contentContainer}>
-      <div className="header">Environment Info</div>
+<Header title='Environment Info' commands={[{name: 'Create', tooltip:'Create new key', action: openAddKeyDialog()}]}  />
       <Divider></Divider>
       <div className={styles.item}>
 
@@ -97,13 +99,13 @@ const [open, setOpen] = React.useState(false);
           </Table>
         </TableContainer>
       </div>
-       <Dialog open={open} onClose={closeSetValueModal}>
+      <Dialog open={open} onClose={closeSetValueModal}>
         <DialogTitle>Edit key: '{editedKevinValue?.key}'</DialogTitle>
         <DialogContent dividers>
           <DialogContentText>
             <div className='dialog-container'>
-           <div>Set a new value.</div>
-            <div className={styles.item}>Environment: '{getEnvironmentName(environmentInfo.selectedEnvironmentId)}'</div>
+              <div>Set a new value.</div>
+              <div className={styles.item}>Environment: '{getEnvironmentName(environmentInfo.selectedEnvironmentId)}'</div>
             </div>
           </DialogContentText>
           <TextField
@@ -112,20 +114,21 @@ const [open, setOpen] = React.useState(false);
             id="newValue"
             label="Value"
             type="text"
-           onChange={(e) => {newValue = e.target.value}}
+            onChange={(e) => { newValue = e.target.value }}
             fullWidth
             variant="standard"
           />
-          {editedKevinValue?.environmentInfo.id !== environmentInfo.selectedEnvironmentId&&<div className="warnLabel">Setting a new value will immediately stop the value inheritance.</div>}
+          {editedKevinValue?.environmentInfo.id !== environmentInfo.selectedEnvironmentId && <div className="warnLabel">Setting a new value will immediately stop the value inheritance.</div>}
         </DialogContent>
         <DialogActions>
           <Button onClick={setValue} variant="contained">Let's go Kevin</Button>
           <Button onClick={closeSetValueModal}>Cancel</Button>
         </DialogActions>
       </Dialog>
+      <AddKeyDialog />
     </div>
 
-    
+
   );
 
 }

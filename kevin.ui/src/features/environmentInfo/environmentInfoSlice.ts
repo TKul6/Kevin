@@ -1,22 +1,27 @@
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
+import { DialogState } from '../../app/helpers/dialog-helpers';
 import { RootState } from '../../app/store';
-import { getEnvironmentKeys, setEnvironmentKey } from '../environments/environmentsApi';
+import { addNewKey, getEnvironmentKeys, setEnvironmentKey } from '../environments/environmentsApi';
 import { selectEnvironment } from '../environments/environmentsSlice';
-
+import { AddKeyModel } from './dialogs/addKeyDialog';
 
 export interface EnvironmentInfoState {
     environmentKeys: Array<IKevinValue>,
     status: 'not loaded' | 'loading' | 'loaded' | 'failed' | 'no data';
     selectedEnvironmentId: string | null,
     editedKevinValue: IKevinValue | null
+    addKeyStatus: DialogState
+
 }
 
 const initialState: EnvironmentInfoState = {
     status: 'not loaded',
     environmentKeys: [],
     selectedEnvironmentId: null,
-    editedKevinValue: null
+    editedKevinValue: null,
+    addKeyStatus: "idle"
+
 }
 
 
@@ -40,6 +45,14 @@ export const setKeyValue = createAsyncThunk<IKevinValue, EditValueModel>('enviro
 );
 
 export const selectKeyValueForEdit = createAction<IKevinValue>('environmentInfo/selectKeyValueForEdit');
+
+export const openAddKeyDialog = createAction('environmentInfo/openAddKeyDialog');
+
+export const addKey = createAsyncThunk<IKevinValue, AddKeyModel>('environmentInfo/addKey', async (model: AddKeyModel) => {
+    return addNewKey(model);
+});
+
+export const closeAddKeyDialog = createAction('environmentInfo/closeAddKeyDialog');
 
 export const environmentInfoSlice = createSlice({
     name: 'environmentInfo',
@@ -73,12 +86,33 @@ export const environmentInfoSlice = createSlice({
                     state.environmentKeys[index] = action.payload;
                 }
                 state.editedKevinValue = null;
+            }).addCase(openAddKeyDialog, (state, _) => {
+                state.addKeyStatus = "start";
+            }).addCase(closeAddKeyDialog, (state, _) => {
+                state.addKeyStatus = "idle";
             })
-    },
+            .addCase(addKey.pending, (state, _) => {
+                state.addKeyStatus = "server-in-progress"
+            })
+            .addCase(addKey.fulfilled, (state, action) => {
+                state.addKeyStatus = "idle";
+                state.environmentKeys.push(action.payload);
+            })
+            .addCase(addKey.rejected, (state, _) => {
+                state.addKeyStatus = "server-failed";
+            });
+    }
 });
+
+
 
 export const selectEnvironmentInfo = (state: RootState) => state.environmentInfo;
 
+export const selectSelectedEnvironmentId = (state: RootState) => state.environmentInfo.selectedEnvironmentId;
+
 export const selectEditedKevinValue = (state: RootState) => state.environmentInfo.editedKevinValue;
+
+export const selectAddKeyStatus = (state: RootState) => state.environmentInfo.addKeyStatus;
+
 
 export default environmentInfoSlice.reducer;

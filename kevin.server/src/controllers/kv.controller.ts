@@ -1,4 +1,4 @@
-import { Get, JsonController, Param, Put, Body, Post } from "routing-controllers";
+import { Get, JsonController, Param, Put, Body, Post, HttpCode } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { type IKevinManager, type IKevinValue } from "@kevin-infra/core/interfaces";
 import {  ValueModel } from "../models/value.model";
@@ -18,12 +18,13 @@ public  async getAllKeys(@Param("id") environmentId: string): Promise<IKevinValu
         return await this.kevinService.getEnvironmentData();
     }
 
+@HttpCode(201)
 @Post()
-public async addKey(@Param("id") environmentId: string, @Body() kvModel: KeyValueModel): Promise<void> {
+public async addKey(@Param("id") environmentId: string, @Body() kvModel: KeyValueModel): Promise<IKevinValue> {
 
-    await this.kevinService.setCurrentEnvironment(environmentId);
+   const currentEnvInfo =  await this.kevinService.setCurrentEnvironment(environmentId);
     await this.kevinService.addKey(kvModel.key, kvModel.value, kvModel.defaultValue);
-    return null;
+    return  {key: kvModel.key, value: kvModel.value, environmentInfo: currentEnvInfo};
 }
 
     @Put("/:key")

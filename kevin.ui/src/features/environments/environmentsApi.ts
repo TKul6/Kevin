@@ -1,4 +1,5 @@
 import { IEnvironmentMetaData, IKevinValue } from "@kevin-infra/core/interfaces";
+import { AddKeyModel } from "../environmentInfo/dialogs/addKeyDialog";
 import { createEnvironmentModel } from "./environmentsSlice";
 
 const base = "http://localhost:3000";
@@ -58,5 +59,19 @@ export async function createNewEnvironment(createModel: createEnvironmentModel):
   }
 
   throw new Error("Failed to create environment");
+
+}
+
+export async function addNewKey(addKeyModel: AddKeyModel): Promise<IKevinValue> {
+
+
+  const response = await fetch(`${base}/environments/${encodeURIComponent(addKeyModel.environmentId)}/keys`, { method: 'POST', body: JSON.stringify(addKeyModel), headers: { 'Content-Type': 'application/json' } });
+
+  if (response.status === 201) {
+    const newEnvironment = await response.json();
+    return newEnvironment;
+  }
+
+  throw new Error("Failed to add key");
 
 }
