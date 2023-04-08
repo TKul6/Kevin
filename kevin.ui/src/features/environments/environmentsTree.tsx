@@ -11,7 +11,7 @@ import { openCreateEnvironmentDialog, selectEnvironment } from './environmentsSl
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import { CreateEnvironmentModel } from './createEnvironmentModal';
+import { CreateEnvironmentDialog } from './dialogs/createEnvironmentDialog';
 import { Header } from '../../app/components/header/header';
 
 
@@ -70,7 +70,7 @@ const tree  = (<TreeView
             </div>
         </div>
       </div>
-      <CreateEnvironmentModel />
+      <CreateEnvironmentDialog />
      </div>
       )
      
