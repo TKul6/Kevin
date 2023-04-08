@@ -4,20 +4,20 @@ import { isModalVisible } from "../../../app/helpers/dialog-helpers";
 import { getEnvironment } from "../../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectEnvironments } from "../../environments/environmentsSlice";
-import { closeAddKeyDialog, selectCreateKeyStatus, selectSelectedEnvironmentId, addKey as addKeyAction } from "../environmentInfoSlice";
+import { closeAddKeyDialog, selectAddKeyStatus, selectSelectedEnvironmentId, addKey as addKeyAction } from "../environmentInfoSlice";
 import styles from "./dialog.module.css"
 import InfoIcon from '@mui/icons-material/Info';
 import React from "react";
 
 
-export interface CreateKeyModel {
+export interface AddKeyModel {
   key: string;
   value: string;
   defaultValue: string;
   environmentId: string;
 }
 
-export function CreateKeyDialog() {
+export function AddKeyDialog() {
 
   const dispatch = useAppDispatch();
 
@@ -26,7 +26,7 @@ const [value, setValue] = React.useState("");
 const [defaultValue, setDefaultValue] = React.useState("");
 const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true);
 
-  const createKeyStatus = useAppSelector(selectCreateKeyStatus);
+  const addKeyStatus = useAppSelector(selectAddKeyStatus);
   const environments = useAppSelector(selectEnvironments);
   const selectedEnvironmentId = useAppSelector(selectSelectedEnvironmentId);
 
@@ -67,12 +67,12 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
 
 
   function addKey() {
-    dispatch(addKeyAction({environmentId: selectedEnvironmentId, key: key, value: value, defaultValue: useValueAsDefaultValue ? value : defaultValue} as CreateKeyModel))
+    dispatch(addKeyAction({environmentId: selectedEnvironmentId, key: key, value: value, defaultValue: useValueAsDefaultValue ? value : defaultValue} as AddKeyModel))
 
   }
 
   return (
-    <Dialog open={isModalVisible(createKeyStatus)} onClose={closeModal}>
+    <Dialog open={isModalVisible(addKeyStatus)} onClose={closeModal}>
       <DialogTitle>Add new key ('{getEnvironment(environments, selectedEnvironmentId).name}')</DialogTitle>
       <DialogContent dividers>
         <DialogContentText>

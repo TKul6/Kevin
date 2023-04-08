@@ -12,7 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { openCreateKeyDialog, selectEditedKevinValue, selectEnvironmentInfo, selectKeyValueForEdit, setKeyValue } from './environmentInfoSlice';
+import { openAddKeyDialog, selectEditedKevinValue, selectEnvironmentInfo, selectKeyValueForEdit, setKeyValue } from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import Tooltip from '@mui/material/Tooltip';
 import Dialog from '@mui/material/Dialog';
@@ -20,7 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Button, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material';
 import { selectEnvironments } from '../environments/environmentsSlice';
 import { Header } from '../../app/components/header/header';
-import { CreateKeyDialog } from './dialogs/create-key-dialog';
+import { AddKeyDialog } from './dialogs/addKeyDialog';
 
 
 
@@ -67,7 +67,7 @@ export function EnvironmentInfo() {
 
   return (
     <div className={styles.contentContainer}>
-<Header title='Environment Info' commands={[{name: 'Create', tooltip:'Create new key', action: openCreateKeyDialog()}]}  />
+<Header title='Environment Info' commands={[{name: 'Create', tooltip:'Create new key', action: openAddKeyDialog()}]}  />
       <Divider></Divider>
       <div className={styles.item}>
 
@@ -125,7 +125,7 @@ export function EnvironmentInfo() {
           <Button onClick={closeSetValueModal}>Cancel</Button>
         </DialogActions>
       </Dialog>
-      <CreateKeyDialog />
+      <AddKeyDialog />
     </div>
 
 
