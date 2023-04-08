@@ -1,5 +1,5 @@
 import { IEnvironmentMetaData, IKevinValue } from "@kevin-infra/core/interfaces";
-import { CreateKeyModel } from "../environmentInfo/dialogs/create-key-dialog";
+import { CreateKeyModel } from "../environmentInfo/dialogs/addKeyDialog";
 import { createEnvironmentModel } from "./environmentsSlice";
 
 const base = "http://localhost:3000";
