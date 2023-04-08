@@ -20,6 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Button, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material';
 import { selectEnvironments } from '../environments/environmentsSlice';
 import { Header } from '../../app/components/header/header';
+import { CreateKeyDialog } from './dialogs/create-key-dialog';
 
 
 
@@ -66,7 +67,7 @@ export function EnvironmentInfo() {
 
   return (
     <div className={styles.contentContainer}>
-<Header title='Environment Info' commands={[{name: 'Create', tooltip:'Create new key', action: openCreateKeyDialog(environmentInfo.selectedEnvironmentId)}]}  />
+<Header title='Environment Info' commands={[{name: 'Create', tooltip:'Create new key', action: openCreateKeyDialog()}]}  />
       <Divider></Divider>
       <div className={styles.item}>
 
@@ -124,6 +125,7 @@ export function EnvironmentInfo() {
           <Button onClick={closeSetValueModal}>Cancel</Button>
         </DialogActions>
       </Dialog>
+      <CreateKeyDialog />
     </div>
 
 

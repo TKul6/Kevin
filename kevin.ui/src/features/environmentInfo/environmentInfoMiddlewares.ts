@@ -1,7 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { selectEnvironment } from '../environments/environmentsSlice';
 import { openToast } from '../system/systemSlice';
-import { loadEnvironmentKeys, setKeyValue } from './environmentInfoSlice';
+import { addKey, closeAddKeyDialog, loadEnvironmentKeys, setKeyValue } from './environmentInfoSlice';
 
 export const keysLoaderMiddleware = createListenerMiddleware();
 
@@ -33,3 +33,27 @@ SetValueFailedMiddleware.startListening({
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
     }
 });
+
+
+export const addKeySuccessMiddleware = createListenerMiddleware();
+
+SetValueSuccessMiddleware.startListening({
+    actionCreator: addKey.fulfilled,
+    effect: (action, listenerApi) => {
+        const message = `Key '${action.payload.key}' was added successfully.`;
+        listenerApi.dispatch(openToast({ text: message, level: 'success' }));
+        listenerApi.dispatch(closeAddKeyDialog());
+    }
+});
+
+
+export const addKeyFailedMiddleware = createListenerMiddleware()
+
+SetValueFailedMiddleware.startListening({
+    actionCreator: addKey.rejected,
+    effect: (action, listenerApi) => {
+        const message = `Failed to add key '${action.meta.arg.key}'`;
+        listenerApi.dispatch(openToast({ text: message, level: 'error' }));
+    }
+});
+

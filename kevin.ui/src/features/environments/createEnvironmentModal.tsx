@@ -1,5 +1,5 @@
-import { IEnvironmentMetaData } from "@kevin-infra/core/interfaces";
 import { Button, Dialog, DialogActions, DialogContentText, DialogTitle, TextField, DialogContent } from "@mui/material"
+import { getEnvironment } from "../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closeCreateEnvironmentDialog, selectCreateEnvironmentModel, selectEnvironments, createEnvironment as createEnvironmentAction } from "./environmentsSlice";
 
@@ -14,10 +14,6 @@ function closeModal() {
     dispatch(closeCreateEnvironmentDialog())
 }
 
-// TODO: move it to some more generic area.
-function getEnvironment(id: string): IEnvironmentMetaData {
-    return environments.find(env => env.id === id);
-}
 
 function createEnvironment() {
     dispatch(createEnvironmentAction({name: newValue, parentId: createEnvModal.parentId}));
@@ -29,7 +25,7 @@ return  ( createEnvModal &&
         <DialogContent dividers>
           <DialogContentText>
             <div className='dialog-container'>
-           <div>The environment will be created under the node  <b>'{getEnvironment(createEnvModal.parentId)?.name}'</b>.</div>
+           <div>The environment will be created under the node  <b>'{getEnvironment(environments, createEnvModal.parentId)?.name}'</b>.</div>
             <div>Please provide a name for the environment (The name should be unique among all sibling environments)</div>
             </div>
           </DialogContentText>
