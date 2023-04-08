@@ -37,6 +37,10 @@ export interface EditValueModel {
     newValue: string
 }
 
+export const openSetKeyValueDialog = createAction<IKevinValue>('environmentInfo/openSetKeyValueDialog');
+
+export const closeSetValueDialog = createAction('environmentInfo/closeSetValueDialog');
+
 export const setKeyValue = createAsyncThunk<IKevinValue, EditValueModel>('environmentInfo/setNewValue',
     async (model: EditValueModel) => {
         return setEnvironmentKey(model.environmentId, model.existingValue.key, model.newValue);
@@ -79,6 +83,11 @@ export const environmentInfoSlice = createSlice({
             })
             .addCase(selectKeyValueForEdit, (state, action) => {
                 state.editedKevinValue = action.payload;
+            })
+            .addCase(openSetKeyValueDialog, (state, action) => {
+                state.editedKevinValue = action.payload;
+            }).addCase(closeSetValueDialog, (state, _) => {
+                state.editedKevinValue = null;
             })
             .addCase(setKeyValue.fulfilled, (state, action) => {
                 const index = state.environmentKeys.findIndex(k => k.key === action.payload.key);

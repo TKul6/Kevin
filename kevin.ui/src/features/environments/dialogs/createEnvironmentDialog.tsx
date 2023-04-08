@@ -1,9 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContentText, DialogTitle, TextField, DialogContent } from "@mui/material"
-import { getEnvironment } from "../../app/helpers/environment-helpers";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { closeCreateEnvironmentDialog, selectCreateEnvironmentModel, selectEnvironments, createEnvironment as createEnvironmentAction } from "./environmentsSlice";
+import { getEnvironment } from "../../../app/helpers/environment-helpers";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { closeCreateEnvironmentDialog, selectCreateEnvironmentModel, selectEnvironments, createEnvironment as createEnvironmentAction } from "../environmentsSlice";
 
-export function CreateEnvironmentModel() {
+export function CreateEnvironmentDialog() {
 
 const dispatch = useAppDispatch();
 

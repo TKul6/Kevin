@@ -4,9 +4,7 @@
     flex: 1;
 }
 
-.item {
-    padding-top: 10px;
-}
+
 
 .inheritItem {
     opacity: 0.5;
