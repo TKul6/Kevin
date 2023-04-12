@@ -51,7 +51,7 @@ export async function setEnvironmentKey(environmentId: string, key: string, valu
 export async function createNewEnvironment(createModel: createEnvironmentModel): Promise<IEnvironmentMetaData> {
 
 
-  const response = await fetch(`${base}/environments/${encodeURIComponent(createModel.parentId)}`, { method: 'POST', body: JSON.stringify({ environmentName   : createModel.name }), headers: { 'Content-Type': 'application/json' } });
+  const response = await fetch(`${base}/environments/${encodeURIComponent(createModel.parentId)}`, { method: 'POST', body: JSON.stringify({ environmentName: createModel.name }), headers: { 'Content-Type': 'application/json' } });
 
   if (response.status === 201) {
     const newEnvironment = await response.json();
@@ -70,6 +70,10 @@ export async function addNewKey(addKeyModel: AddKeyModel): Promise<IKevinValue> 
   if (response.status === 201) {
     const newEnvironment = await response.json();
     return newEnvironment;
+  }
+
+  else if (response.status === 409) {
+    throw new Error(`Opps, it seems the key '${addKeyModel.key}' already exists.`)
   }
 
   throw new Error("Failed to add key");

@@ -8,12 +8,17 @@ import { EnvironmentKeysController } from './controllers/kv.controller';
 import { EnvironmentsController } from './controllers/environments.controller';
 // import { InMemoryProvider } from '@kevin-infra/core/src/providers/in-memory.provider';
 import cors from 'cors';
+import { KevinErrorHandlerMiddleware } from './middlewares/kevin-errors-handler.middleware'
+
+
  Container.set('kevin.service', new KevinService(new RedisProvider(new Redis("redis://localhost:6379"))));
 
 useContainer(Container);
 
 const app = createExpressServer({
-  controllers: [EnvironmentKeysController, EnvironmentsController]
+  controllers: [EnvironmentKeysController, EnvironmentsController],
+  middlewares: [KevinErrorHandlerMiddleware],
+  defaultErrorHandler: false
 });
 
 
