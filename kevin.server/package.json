@@ -54,5 +54,15 @@
     "../kevin.core",
     "../../kevin",
     "../kevin.redis"
-  ]
+  ],
+  "exports": {
+    "./middlewares": "./dist/middlewares/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "middlewares": [
+        "dist/middlewares"
+      ]
+    }
+  }
 }

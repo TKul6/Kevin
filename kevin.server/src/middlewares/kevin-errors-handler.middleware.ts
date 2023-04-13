@@ -32,8 +32,9 @@ export class KevinErrorHandlerMiddleware implements ExpressErrorMiddlewareInterf
                     return;
 
             }
-        }
             response.status(500).send({ message: error.message });
+        }
+            
 
     }
 }
