@@ -52,7 +52,7 @@ export const addKeyFailedMiddleware = createListenerMiddleware()
 SetValueFailedMiddleware.startListening({
     actionCreator: addKey.rejected,
     effect: (action, listenerApi) => {
-        const message = `Failed to add key '${action.meta.arg.key}'`;
+        const message = action.error.message;
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
     }
 });

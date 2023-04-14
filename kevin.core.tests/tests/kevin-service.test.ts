@@ -856,7 +856,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrow("Duplicate environment found");
+            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrow("Duplicate key found");
 
             verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -889,7 +889,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrowError("Duplicate environment found");
+            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrowError("Duplicate key found");
 
 
             // Assert

@@ -5,6 +5,7 @@ on:
     paths:
       - kevin.server/**
       - kevin.core/**
+      - kevin.server.tests/**
   push:
     branches: [ main ]
     paths:
@@ -30,6 +31,12 @@ jobs:
         working-directory: ./kevin.server
       - run: npm run build --if-present
         name: Build Kevin Server
+        working-directory: ./kevin.server
+      - run: npm ci
+        name: Install test dependencies
+        working-directory: ./kevin.server.tests
+      - run: npm test
+        name: Test Kevin Server
         working-directory: ./kevin.server
       - run: npm run lint
         working-directory: ./kevin.server

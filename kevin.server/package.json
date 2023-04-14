@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --watch './**/*.ts' --exec ts-node ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm test --prefix=../kevin.server.tests",
     "build": "tsc",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts --fix src",
@@ -54,5 +54,15 @@
     "../kevin.core",
     "../../kevin",
     "../kevin.redis"
-  ]
+  ],
+  "exports": {
+    "./middlewares": "./dist/middlewares/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "middlewares": [
+        "dist/middlewares"
+      ]
+    }
+  }
 }
