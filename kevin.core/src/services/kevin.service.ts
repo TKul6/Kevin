@@ -76,23 +76,24 @@ export class KevinService implements IKevinManager {
 
     this.verifyEnvironmentIsSet();
     let currentEnvironment = this.envInfo;
-    let value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
+    const loweredKey = key.toLowerCase();
+    let value = await this.provider.getValue(this.getFullKey(loweredKey, currentEnvironment));
 
     while (!value && currentEnvironment.parentEnvironment) {
       currentEnvironment = currentEnvironment.parentEnvironment;
-      value = await this.provider.getValue(this.getFullKey(key, currentEnvironment));
+      value = await this.provider.getValue(this.getFullKey(loweredKey, currentEnvironment));
     }
 
     if (!value) {
       return null;
     }
-    return { value, environmentInfo: currentEnvironment, key }
+    return { value, environmentInfo: currentEnvironment, key: loweredKey };
 
   }
 
   async setValue(key: string, value: string): Promise<void> {
     this.verifyEnvironmentIsSet();
-    await this.provider.setValue(this.getFullKey(key), value);
+\    await this.provider.setValue(this.getFullKey(key), value);
   }
 
   public async getEnvironmentData(): Promise<IKevinValue[]> {
@@ -180,7 +181,7 @@ export class KevinService implements IKevinManager {
   }
 
   private getFullKeyByEnvironmentId(key: string, environmentId: string): string {
-    return `${this.keysPrefix}${environmentId}${this.keysDelimiter}${key}`;
+    return `${this.keysPrefix}${environmentId}${this.keysDelimiter}${key.toLocaleLowerCase()}`;
   }
 
   private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
