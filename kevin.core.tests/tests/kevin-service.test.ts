@@ -370,6 +370,31 @@ describe("KevinService", () => {
 
         })
 
+        it("should handle having the same value with different capital letters", async () => {
+
+            // Arrange
+            const keyName = "key";
+            const keyValue = "value";
+            const keyPath = `kevin.${ENVIRONMENT_INFO.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyPath)).thenResolve(keyValue);
+
+            const service = new KevinService(instance(providerMock), ENVIRONMENT_INFO);
+
+            // Act
+            const result = await service.getValue(keyName.toUpperCase());
+
+            // Assert
+            expect(result.key).toBe(keyName);
+            expect(result.value).toBe(keyValue);
+            expect(result.environmentInfo.id).toBe(ENVIRONMENT_INFO.id);
+            verify(providerMock.getValue(keyPath)).once();
+            verify(providerMock.getValue(anyString())).once();
+
+        })
+
+
+      
+
     })
 
     describe("set value", () => {
@@ -393,6 +418,26 @@ describe("KevinService", () => {
 
             // Act
             await service.setValue(keyName, keyValue);
+
+            // Assert
+            verify(providerMock.setValue(fullKey, keyValue)).once();
+            verify(providerMock.setValue(anyString(), anyString())).once();
+
+        })
+
+        it("should set the lowered version of the key in the right location in the KV store", async () => {
+            // Arrange
+            const keyName = "key";
+            const keyValue = "value";
+
+            const fullKey = `kevin.${ENVIRONMENT_INFO.id}.keys.${keyName}`;
+
+            when(providerMock.setValue(fullKey, keyValue)).thenResolve();
+
+            const service = new KevinService(instance(providerMock), ENVIRONMENT_INFO);
+
+            // Act
+            await service.setValue(keyName.toUpperCase(), keyValue);
 
             // Assert
             verify(providerMock.setValue(fullKey, keyValue)).once();
@@ -545,7 +590,7 @@ describe("KevinService", () => {
 
     describe("create environment", () => {
 
-        const NEW_ENVIRONMENT_NAME = "newEnvironment";
+        const NEW_ENVIRONMENT_NAME = "new-environment";
 
         it("should create a new environment under the root environment.", async () => {
 
@@ -581,10 +626,7 @@ describe("KevinService", () => {
         });
 
         it("should create a new environment under the current environment.", async () => {
-
-
             // Arrange
-
             const rootEnvironment: IEnvironmentInformation = {
                 name: ROOT_ENVIRONMENT_NAME,
                 id: ROOT_ENVIRONMENT_ID,
@@ -680,12 +722,37 @@ describe("KevinService", () => {
 
         });
 
+        it("should handle environment already exists, where there is another environment name with different capital letters", async () => {
+
+            // Arrange
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${NEW_ENVIRONMENT_NAME}`;
+
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).thenResolve(true);
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME.toUpperCase(), ROOT_ENVIRONMENT_ID))
+                .rejects.toThrow("Duplicate environment found");
+
+            // Assert
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).once();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+
+
+            verify(providerMock.hasKey(anyString())).twice()
+            verify(providerMock.setValue(anyString(), anything())).never();
+
+        });
+
         it("should create a new environment under the root environment while cleaning the id.", async () => {
 
             // Arrange
 
             const environmentName = "environment Name";
-            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/environment_Name`;
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/environment_name`;
 
             when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
             when(providerMock.getValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`))
@@ -728,8 +795,8 @@ describe("KevinService", () => {
                 parentEnvironment: null
             }
 
-            const keyName = "newKey";
-            const keyValue = "newValue";
+            const keyName = "key";
+            const keyValue = "value";
 
             const keyFullPath = `kevin.${rootEnvironment.id}.keys.${keyName}`;
             when(providerMock.getValue(keyFullPath)).thenResolve(null);
@@ -738,6 +805,32 @@ describe("KevinService", () => {
 
             // Act
             await service.addKey(keyName, keyValue);
+
+            verify(providerMock.setValue(keyFullPath, keyValue)).once();
+            verify(providerMock.getValue(keyFullPath)).once();
+            verify(providerMock.setValue(anyString(), anyString())).once();
+            verify(providerMock.getValue(anyString())).once();
+
+        });
+
+        it("should handle having the same key with different capital letters.", async () => {
+            // Arrange
+            const rootEnvironment: IEnvironmentInformation = {
+                name: ROOT_ENVIRONMENT_NAME,
+                id: ROOT_ENVIRONMENT_ID,
+                parentEnvironment: null
+            }
+
+            const keyName = "new-key";
+            const keyValue = "new-value";
+
+            const keyFullPath = `kevin.${rootEnvironment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(null);
+
+            const service = new KevinService(instance(providerMock), rootEnvironment);
+
+            // Act
+            await service.addKey(keyName.toUpperCase(), keyValue);
 
             verify(providerMock.setValue(keyFullPath, keyValue)).once();
             verify(providerMock.getValue(keyFullPath)).once();
@@ -759,8 +852,8 @@ describe("KevinService", () => {
 
             }
 
-            const keyName = "newKey";
-            const keyValue = "newValue";
+            const keyName = "key";
+            const keyValue = "value";
             const defaultValue = "defaultValue";
 
             const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
@@ -796,8 +889,8 @@ describe("KevinService", () => {
 
             }
 
-            const keyName = "newKey";
-            const keyValue = "newValue";
+            const keyName = "key";
+            const keyValue = "value";
 
             const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
             when(providerMock.getValue(keyFullPath)).thenResolve(null);
@@ -846,8 +939,8 @@ describe("KevinService", () => {
 
             }
 
-            const keyName = "newKey";
-            const keyValue = "newValue";
+            const keyName = "key";
+            const keyValue = "value";
 
             const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
             when(providerMock.getValue(keyFullPath)).thenResolve(keyValue);
@@ -857,6 +950,39 @@ describe("KevinService", () => {
 
             // Act + Assert
             await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrow("Duplicate key found");
+
+            verify(providerMock.getValue(keyFullPath)).once();
+            verify(providerMock.setValue(anyString(), anyString())).never();
+            verify(providerMock.getValue(anyString())).once();
+        });
+
+        it("should handle the lowered version of the key already in the environment.", async () => {
+
+            // Arrange
+            const environment: IEnvironmentInformation = {
+                name: "environment",
+                id: `${ROOT_ENVIRONMENT_ID}/myEnv`,
+                parentEnvironment: {
+                    name: ROOT_ENVIRONMENT_NAME,
+                    id: ROOT_ENVIRONMENT_ID,
+                    parentEnvironment: null
+                }
+
+            }
+
+            const keyName = "new_key";
+            const keyValue = "new_Value";
+
+            const keyFullPath = `kevin.${environment.id}.keys.${keyName}`;
+            when(providerMock.getValue(keyFullPath)).thenResolve(keyValue);
+
+
+            const service = new KevinService(instance(providerMock), environment);
+
+            // Act + Assert
+            await expect(async () =>
+            
+            await service.addKey(keyName.toUpperCase(), keyValue)).rejects.toThrow("Duplicate key found");
 
             verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -876,8 +1002,8 @@ describe("KevinService", () => {
 
             }
 
-            const keyName = "newKey";
-            const keyValue = "newValue";
+            const keyName = "key";
+            const keyValue = "value";
 
             const currentEnvironmentFullKey = `kevin.${environment.id}.keys.${keyName}`;
 
