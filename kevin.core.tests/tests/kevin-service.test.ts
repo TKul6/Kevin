@@ -590,7 +590,7 @@ describe("KevinService", () => {
 
     describe("create environment", () => {
 
-        const NEW_ENVIRONMENT_NAME = "newEnvironment";
+        const NEW_ENVIRONMENT_NAME = "new-environment";
 
         it("should create a new environment under the root environment.", async () => {
 
@@ -626,10 +626,7 @@ describe("KevinService", () => {
         });
 
         it("should create a new environment under the current environment.", async () => {
-
-
             // Arrange
-
             const rootEnvironment: IEnvironmentInformation = {
                 name: ROOT_ENVIRONMENT_NAME,
                 id: ROOT_ENVIRONMENT_ID,
@@ -725,12 +722,37 @@ describe("KevinService", () => {
 
         });
 
+        it("should handle environment already exists, where there is another environment name with different capital letters", async () => {
+
+            // Arrange
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/${NEW_ENVIRONMENT_NAME}`;
+
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
+            when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).thenResolve(true);
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            await expect(async () => await service.createEnvironment(NEW_ENVIRONMENT_NAME.toUpperCase(), ROOT_ENVIRONMENT_ID))
+                .rejects.toThrow("Duplicate environment found");
+
+            // Assert
+
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).once();
+            verify(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${expectedEnvironmentId}`)).once();
+
+
+            verify(providerMock.hasKey(anyString())).twice()
+            verify(providerMock.setValue(anyString(), anything())).never();
+
+        });
+
         it("should create a new environment under the root environment while cleaning the id.", async () => {
 
             // Arrange
 
             const environmentName = "environment Name";
-            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/environment_Name`;
+            const expectedEnvironmentId = `${ROOT_ENVIRONMENT_ID}/environment_name`;
 
             when(providerMock.hasKey(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`)).thenResolve(true);
             when(providerMock.getValue(`${KEVIN_INTERNAL_ENVIRONMENT_PREFIX}.${ROOT_ENVIRONMENT_ID}`))
