@@ -4,7 +4,7 @@ import { isModalVisible } from "../../../app/helpers/dialog-helpers";
 import { getEnvironment } from "../../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectEnvironments } from "../../environments/environmentsSlice";
-import { closeAddKeyDialog, selectAddKeyStatus, selectSelectedEnvironmentId, addKey as addKeyAction } from "../environmentInfoSlice";
+import { closeAddKeyDialog, selectAddKeyStatus, selectSelectedEnvironmentId, addKey as addKeyAction, selectEnvironmentInfo } from "../environmentInfoSlice";
 import styles from "./dialog.module.css"
 import InfoIcon from '@mui/icons-material/Info';
 import React from "react";
@@ -21,15 +21,16 @@ export function AddKeyDialog() {
 
   const dispatch = useAppDispatch();
 
-const [key, setKey] = React.useState("");
-const [value, setValue] = React.useState("");
-const [defaultValue, setDefaultValue] = React.useState("");
-const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true);
+  const [key, setKey] = React.useState("");
+  const [value, setValue] = React.useState("");
+  const [defaultValue, setDefaultValue] = React.useState("");
+  const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true);
+  const [keyErrorText, setKeyErrorText] = React.useState("");
 
   const addKeyStatus = useAppSelector(selectAddKeyStatus);
   const environments = useAppSelector(selectEnvironments);
   const selectedEnvironmentId = useAppSelector(selectSelectedEnvironmentId);
-
+  const siblingKeys = useAppSelector(selectEnvironmentInfo).environmentKeys;
 
   function renderDefaultValueSection() {
     if (selectedEnvironmentId === "root") {
@@ -37,26 +38,26 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
     } else {
       return <div className={styles.bottomSection + " dialog-container"} >
         <div className={styles.flexCenter}>
-          <FormControlLabel control={<Checkbox defaultChecked size="small" onChange={(e) =>setUseValueAsDefaultValue(e.target.checked)} />} label="Use the value as default value." />
-           <Tooltip 
-           title={<React.Fragment><Typography fontSize={14}>The default value will be used when different environments will try to get this key. if no default value is provided, Kevin will use empty string as the default value</Typography></React.Fragment>}>
-           <InfoIcon fontSize="small" />
-           </Tooltip>
+          <FormControlLabel control={<Checkbox defaultChecked size="small" onChange={(e) => setUseValueAsDefaultValue(e.target.checked)} />} label="Use the value as default value." />
+          <Tooltip
+            title={<React.Fragment><Typography fontSize={14}>The default value will be used when different environments will try to get this key. if no default value is provided, Kevin will use empty string as the default value</Typography></React.Fragment>}>
+            <InfoIcon fontSize="small" />
+          </Tooltip>
 
         </div>
         <div>
-             <TextField
-                autoFocus
-                disabled={useValueAsDefaultValue}
-                margin="dense"
-                id="defaultValue"
-                label="Default Value"
-                type="text"
-                onChange={(e) => {setDefaultValue(e.target.value)}}
-                fullWidth
-                variant="standard"
-              />
-            </div>
+          <TextField
+            autoFocus
+            disabled={useValueAsDefaultValue}
+            margin="dense"
+            id="defaultValue"
+            label="Default Value"
+            type="text"
+            onChange={(e) => { setDefaultValue(e.target.value) }}
+            fullWidth
+            variant="standard"
+          />
+        </div>
       </div>
     }
   }
@@ -67,8 +68,21 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
 
 
   function addKey() {
-    dispatch(addKeyAction({environmentId: selectedEnvironmentId, key: key, value: value, defaultValue: useValueAsDefaultValue ? value : defaultValue} as AddKeyModel))
+    dispatch(addKeyAction({ environmentId: selectedEnvironmentId, key: key, value: value, defaultValue: useValueAsDefaultValue ? value : defaultValue } as AddKeyModel))
 
+  }
+
+  function verifyAndSetKey(value: string) {
+    setKey(value);
+
+    const loweredKey = value.toLowerCase();
+    if (value.length < 2) {
+      setKeyErrorText("Key must be at least 2 characters");
+    } else if (siblingKeys.some(sibling => sibling.key === loweredKey)) {
+      setKeyErrorText("Opps, It seems like this key already exists in this environment.");
+    } else {
+      setKeyErrorText("");
+    }
   }
 
   return (
@@ -80,7 +94,7 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
             <div>The Key will be added under the environment  <b>'{getEnvironment(environments, selectedEnvironmentId).name}'</b>.</div>
             <div>Please provide the <b>Key</b> & <b>Value</b>.</div>
           </div>
-
+          {keyErrorText.length > 0}
           <div className="flex-row">
             <div className="flex-grow">
               <TextField
@@ -89,7 +103,9 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
                 id="key"
                 label="Key"
                 type="text"
-                 onChange={(e) => {setKey(e.target.value)}}
+                error={keyErrorText.length > 0}
+                helperText={keyErrorText}
+                onChange={(e) => { verifyAndSetKey(e.target.value) }}
                 fullWidth
                 variant="standard"
               />
@@ -102,7 +118,7 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
                 id="value"
                 label="Value"
                 type="text"
-                 onChange={(e) => {setValue(e.target.value)}}
+                onChange={(e) => { setValue(e.target.value) }}
                 fullWidth
                 variant="standard"
               />
@@ -112,7 +128,7 @@ const [useValueAsDefaultValue, setUseValueAsDefaultValue] = React.useState(true)
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={addKey} variant="contained" disabled={key.length === 0 || value.length ===0}>Add it Kevin!</Button>
+        <Button onClick={addKey} variant="contained" disabled={keyErrorText.length > 0 || value.length === 0}>Add it Kevin!</Button>
         <Button onClick={closeModal}>Cancel</Button>
       </DialogActions>
     </Dialog>
