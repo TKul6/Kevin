@@ -425,6 +425,28 @@ describe("KevinService", () => {
 
         })
 
+        it("should trim the key", async () => {
+            // Arrange
+            const keyName = "key";
+            const keyValue = "value";
+
+            const fullKey = `kevin.${ENVIRONMENT_INFO.id}.keys.${keyName}`;
+
+            when(providerMock.setValue(fullKey, keyValue)).thenResolve();
+
+            const service = new KevinService(instance(providerMock), ENVIRONMENT_INFO);
+
+            // Act
+            await service.setValue(keyName + "           ", keyValue);
+
+            // Assert
+            verify(providerMock.setValue(fullKey, keyValue)).once();
+            verify(providerMock.setValue(anyString(), anyString())).once();
+
+        })
+
+
+
         it("should set the lowered version of the key in the right location in the KV store", async () => {
             // Arrange
             const keyName = "key";

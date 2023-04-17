@@ -93,7 +93,7 @@ export class KevinService implements IKevinManager {
 
   async setValue(key: string, value: string): Promise<void> {
     this.verifyEnvironmentIsSet();
-    await this.provider.setValue(this.getFullKey(key), value);
+    await this.provider.setValue(this.getFullKey(key.trim()), value);
   }
 
   public async getEnvironmentData(): Promise<IKevinValue[]> {
@@ -181,7 +181,7 @@ export class KevinService implements IKevinManager {
   }
 
   private getFullKeyByEnvironmentId(key: string, environmentId: string): string {
-    return `${this.keysPrefix}${environmentId}${this.keysDelimiter}${key.toLocaleLowerCase()}`;
+    return `${this.keysPrefix}${environmentId}${this.keysDelimiter}${key.toLowerCase()}`;
   }
 
   private async getEnvironmentMetaData(environmentId: string): Promise<IEnvironmentMetaData> {
