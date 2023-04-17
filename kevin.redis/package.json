@@ -39,7 +39,6 @@
     "@kevin-infra/kevin": "^1.0.0"
   },
   "workspaces": [
-    "../kevin.core",
-    "../kevin"
+    "../kevin.core"
   ]
 }
