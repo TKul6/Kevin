@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@kevin-infra/core": "^1.0.24-alpha",
-    "ioredis": "^4.27.7",
-    "@kevin-infra/kevin": "^1.0.0"
+    "ioredis": "^4.27.7"
+    
   },
   "workspaces": [
     "../kevin.core"
