@@ -23,69 +23,69 @@ export function EnvironmentsTree() {
   const dispatch = useAppDispatch();
 
 
-function openCreateModal(e, environmentId: string) {
-  e.stopPropagation();
+  function openCreateModal(e, environmentId: string) {
+    e.stopPropagation();
     dispatch(openCreateEnvironmentDialog(environmentId));
-}
-
-function copyEnvironmentIdToClipboard(e, environmentId: string) {
-  e.stopPropagation();
-  navigator.clipboard.writeText(environmentId);
-  dispatch(openToast({text: 'Copied environment id to clipboard', level: 'success'}))
-}
-
-function renderBranch(allEnvironments: Array<IEnvironmentMetaData>, currentEnvironment?: IEnvironmentMetaData) {
-
-  if (!currentEnvironment) {
-    return (<div>Failed to find root node!</div>)
   }
-  return (
-    <TreeItem nodeId={currentEnvironment.id} label={<div className={styles.treeItemContainer}>
-      <div className='treeItemText'>{currentEnvironment.name}</div>
-      <div className={styles.commandsContainer}>
-        <Tooltip title="Create environment under this node" placement="top">
-        <IconButton size="small" aria-label="create environment" onClick={(e) =>  openCreateModal(e, currentEnvironment.id)}>
-          <AddIcon fontSize="inherit" />
-          </IconButton>
+
+  function copyEnvironmentIdToClipboard(e, environmentId: string) {
+    e.stopPropagation();
+    navigator.clipboard.writeText(environmentId);
+    dispatch(openToast({ text: 'Copied environment id to clipboard', level: 'success' }))
+  }
+
+  function renderBranch(allEnvironments: Array<IEnvironmentMetaData>, currentEnvironment?: IEnvironmentMetaData) {
+
+    if (!currentEnvironment) {
+      return (<div>Failed to find root node!</div>)
+    }
+    return (
+      <TreeItem nodeId={currentEnvironment.id} label={<div className={styles.treeItemContainer}>
+        <div className='treeItemText'>{currentEnvironment.name}</div>
+        <div className={styles.commandsContainer}>
+          <Tooltip title="Create environment under this node" placement="top">
+            <IconButton size="small" aria-label="create environment" onClick={(e) => openCreateModal(e, currentEnvironment.id)}>
+              <AddIcon fontSize="inherit" />
+            </IconButton>
           </Tooltip>
-         <Tooltip title="Copy environment id" placement="top">
-        <IconButton size="small" aria-label="Copy environment id" onClick={(e) =>  copyEnvironmentIdToClipboard(e, currentEnvironment.id)}>
-          <CopyIcon fontSize="inherit" />
-          </IconButton>
+          <Tooltip title="Copy environment id" placement="top">
+            <IconButton size="small" aria-label="Copy environment id" onClick={(e) => copyEnvironmentIdToClipboard(e, currentEnvironment.id)}>
+              <CopyIcon fontSize="inherit" />
+            </IconButton>
           </Tooltip>
         </div></div>}>
-      {allEnvironments.filter((childEnvironment) => childEnvironment.parentEnvironmentId === currentEnvironment.id)
-        .map((childEnvironment) => { return renderBranch(allEnvironments, childEnvironment) })}
-    </TreeItem>
-  )
-}
+        {allEnvironments.filter((childEnvironment) => childEnvironment.parentEnvironmentId === currentEnvironment.id)
+          .map((childEnvironment) => { return renderBranch(allEnvironments, childEnvironment) })}
+      </TreeItem>
+    )
+  }
 
 
-const tree  = (<TreeView
-              onNodeSelect={(_: any, nodeId: string) => dispatch(selectEnvironment(nodeId))}
-              aria-label="Environments"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              sx={{ height: 300, flexGrow: 1 }}
-            >
-              {renderBranch(environments, environments.find((environment) => !environment.parentEnvironmentId))}
-            </TreeView>)
+  const tree = (<TreeView
+    onNodeSelect={(_: any, nodeId: string) => dispatch(selectEnvironment(nodeId))}
+    aria-label="Environments"
+    defaultCollapseIcon={<ExpandMoreIcon />}
+    defaultExpandIcon={<ChevronRightIcon />}
+    sx={{ height: 300, flexGrow: 1 }}
+  >
+    {renderBranch(environments, environments.find((environment) => !environment.parentEnvironmentId))}
+  </TreeView>)
 
-  
-    return (
-     <div className="treeComponentContainer">
+
+  return (
+    <div className="treeComponentContainer">
       <div className={styles.contentContainer}>
-       <Header title='Environments' />
+        <Header title='Environments' />
         <Divider></Divider>
         <div className={styles.item}>
           {environments.length > 0 ? tree : <div>Empty State</div>}
           <div>
-            </div>
+          </div>
         </div>
       </div>
       <CreateEnvironmentDialog />
-     </div>
-      )
-     
+    </div>
+  )
+
 
 }
