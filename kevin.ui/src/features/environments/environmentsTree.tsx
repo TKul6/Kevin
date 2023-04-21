@@ -9,10 +9,12 @@ import { IEnvironmentMetaData } from '@kevin-infra/core/interfaces';
 import Divider from '@mui/material/Divider';
 import { openCreateEnvironmentDialog, selectEnvironment } from './environmentsSlice';
 import AddIcon from '@mui/icons-material/Add';
+import CopyIcon from '@mui/icons-material/ContentCopy';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import { CreateEnvironmentDialog } from './dialogs/createEnvironmentDialog';
 import { Header } from '../../app/components/header/header';
+import { openToast } from '../system/systemSlice';
 
 
 
@@ -24,6 +26,12 @@ export function EnvironmentsTree() {
 function openCreateModal(e, environmentId: string) {
   e.stopPropagation();
     dispatch(openCreateEnvironmentDialog(environmentId));
+}
+
+function copyEnvironmentIdToClipboard(e, environmentId: string) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(environmentId);
+  dispatch(openToast({text: 'Copied environment id to clipboard', level: 'success'}))
 }
 
 function renderBranch(allEnvironments: Array<IEnvironmentMetaData>, currentEnvironment?: IEnvironmentMetaData) {
@@ -38,6 +46,11 @@ function renderBranch(allEnvironments: Array<IEnvironmentMetaData>, currentEnvir
         <Tooltip title="Create environment under this node" placement="top">
         <IconButton size="small" aria-label="create environment" onClick={(e) =>  openCreateModal(e, currentEnvironment.id)}>
           <AddIcon fontSize="inherit" />
+          </IconButton>
+          </Tooltip>
+         <Tooltip title="Copy environment id" placement="top">
+        <IconButton size="small" aria-label="Copy environment id" onClick={(e) =>  copyEnvironmentIdToClipboard(e, currentEnvironment.id)}>
+          <CopyIcon fontSize="inherit" />
           </IconButton>
           </Tooltip>
         </div></div>}>
