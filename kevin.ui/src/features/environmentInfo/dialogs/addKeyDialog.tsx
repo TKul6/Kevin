@@ -63,6 +63,11 @@ export function AddKeyDialog() {
   }
 
   function closeModal() {
+    setKey("");
+    setValue("");
+    setDefaultValue("");
+    setUseValueAsDefaultValue(true);
+    setKeyErrorText("");
     dispatch(closeAddKeyDialog())
   }
 
