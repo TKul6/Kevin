@@ -12,6 +12,7 @@ export function SetKeyDialog() {
   const dispatch = useAppDispatch();
   function closeDialog() {
     dispatch(closeSetValueDialog());
+    setNewValue("");
   }
 
   const editedKevinValue = useAppSelector(selectEditedKevinValue);
