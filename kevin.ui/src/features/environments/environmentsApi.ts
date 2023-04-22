@@ -53,12 +53,18 @@ export async function createNewEnvironment(createModel: createEnvironmentModel):
 
   const response = await fetch(`${base}/environments/${encodeURIComponent(createModel.parentId)}`, { method: 'POST', body: JSON.stringify({ environmentName: createModel.name }), headers: { 'Content-Type': 'application/json' } });
 
-  if (response.status === 201) {
-    const newEnvironment = await response.json();
-    return newEnvironment;
+  switch (response.status) {
+    case 201:
+      const newEnvironment = await response.json();
+      return newEnvironment;
+      break;
+    case 409:
+      throw new Error(`Opps, it seems the environment '${createModel.name}' already exists under the same parent.`);
+      break;
   }
 
-  throw new Error("Failed to create environment");
+
+  throw new Error(`Failed to create environment '${createModel.name}'`);
 
 }
 

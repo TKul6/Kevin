@@ -8,7 +8,7 @@ export const createEnvironmentFailed = createListenerMiddleware();
 createEnvironmentFailed.startListening({
     actionCreator: createEnvironment.rejected,
     effect: (action, listenerApi) => {
-        listenerApi.dispatch(openToast({ text: `Failed to create environment '${action.meta.arg.name}'`, level: 'error' }));
+        listenerApi.dispatch(openToast({ text: action.error.message, level: 'error' }));
     }
 
 });
