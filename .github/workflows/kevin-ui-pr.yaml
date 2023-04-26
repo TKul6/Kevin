@@ -25,6 +25,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
         name: Install Root Dependencies
+      - run: npm run build:allDependencies
+        working-directory: ./kevin.ui
+        name: Build UI Dependencies
       - run: npm ci
         working-directory: ./kevin.ui
         name: Install UI Dependencies
