@@ -1,0 +1,36 @@
+name: Kevin UI PR
+
+on:
+  pull_request:
+    paths:
+      - kevin.ui/**
+  push:
+    branches: [ main ]
+    paths:
+      - kevin.ui/**
+
+jobs:
+  build_kevin_core:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [17.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name:  CI Kevin UI (Node.js ${{ matrix.node-version }})
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+        name: Install Root Dependencies
+      - run: npm ci
+        working-directory: ./kevin.ui
+        name: Install UI Dependencies
+      - run: npm run lint
+        working-directory: ./kevin.ui
+      - run: npm run build --if-present
+        working-directory: ./kevin.ui
+      - run: npm test
+        working-directory: ./kevin.ui
