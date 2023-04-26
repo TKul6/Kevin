@@ -57,10 +57,8 @@ export async function createNewEnvironment(createModel: createEnvironmentModel):
     case 201:
       const newEnvironment = await response.json();
       return newEnvironment;
-      break;
     case 409:
       throw new Error(`Opps, it seems the environment '${createModel.name}' already exists under the same parent.`);
-      break;
   }
 
 
