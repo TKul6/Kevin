@@ -1,7 +1,6 @@
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import styles from './environmentInfo.module.css';
-import * as React from 'react';
 import Divider from '@mui/material/Divider';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,13 +11,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { openAddKeyDialog, openSetKeyValueDialog, selectEditedKevinValue, selectEnvironmentInfo, selectKeyValueForEdit, setKeyValue } from './environmentInfoSlice';
+import { openAddKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo} from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import Tooltip from '@mui/material/Tooltip';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Button, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material';
-import { selectEnvironments } from '../environments/environmentsSlice';
 import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
 import { SetKeyDialog } from './dialogs/setKeyDialog';

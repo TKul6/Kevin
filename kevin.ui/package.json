@@ -28,6 +28,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "build:allDependencies": "npm run ci:root && npm run build:core",
+    "ci:root": "npm ci --prefix ../",
+    "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
