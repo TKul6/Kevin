@@ -1,9 +1,7 @@
 import { type IProvider } from "@kevin-infra/core/interfaces"
-import { GetParameterCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
-import { GetParametersByPathCommand } from "@aws-sdk/client-ssm/dist-types/commands";
+import { GetParameterCommand, GetParametersByPathCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
 
-
-export class RedisProvider implements IProvider {
+export class AwsParametersStoreProvider implements IProvider {
 
     private readonly client: SSMClient;
 
@@ -18,7 +16,7 @@ export class RedisProvider implements IProvider {
 
     async getValue(key: string): Promise<string> {
 
-        const command = new GetParameterCommand({ Name: key, WithDecryption: true });
+        const command = new GetParameterCommand({ Name: `/${key}`, WithDecryption: true });
 
         const response = await this.client.send(command);
 
@@ -27,7 +25,7 @@ export class RedisProvider implements IProvider {
 
     async setValue(key: string, value: string): Promise<void> {
 
-        await this.client.send(new PutParameterCommand({ Name: key, Value: value, Type: "String", Overwrite: true }))
+        await this.client.send(new PutParameterCommand({ Name: `/${key}`, Value: value, Type: "String", Overwrite: true }))
     }
 
     async getValueRange(keyPrefix: string): Promise<string[]> {
@@ -42,7 +40,7 @@ export class RedisProvider implements IProvider {
 
     async getKeys(keyPrefix: string): Promise<string[]> {
 
-        const command = new GetParametersByPathCommand({ Path: keyPrefix, Recursive: true, WithDecryption: true })
+        const command = new GetParametersByPathCommand({ Path: `/${keyPrefix}`, Recursive: true, WithDecryption: true })
 
         const response = await this.client.send(command);
         return response.Parameters.map(p => p.Name);
