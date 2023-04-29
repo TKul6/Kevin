@@ -1,0 +1,45 @@
+{
+  "name": "@kevin-infra/aws",
+  "version": "1.0.0",
+  "description": "AWS providers for Kevin.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts --fix src",
+    "ci:root": "npm ci --prefix ../",
+    "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core",
+    "build:allDependencies": "npm run ci:root && npm run build:core"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TKul6/Kevin.git"
+  },
+  "keywords": [
+    "kevin",
+    "KV",
+    "store",
+    "configuration",
+    "redis",
+    "key-value",
+    "aws",
+    "parameters store"
+  ],
+  "author": "TKul6",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TKul6/Kevin/issues"
+  },
+  "homepage": "https://github.com/TKul6/Kevin#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.321.1",
+    "@kevin-infra/core": "^1.0.24-alpha"
+  },
+  "workspaces": [
+    "../kevin.core"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+    "strict": false,
+    "sourceMap": true,
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "outDir": "./dist",
+        "strictNullChecks": false,
+        "lib": [
+            "es2015"
+        ],
+        "esModuleInterop": true,
+        "declaration": true
+    },
+    "exclude": [
+        "dist",
+        "node_modules"
+    ],
+    "include": [
+        "src"
+    ]
+}
