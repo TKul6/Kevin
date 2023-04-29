@@ -1,27 +1,21 @@
-name: Kevin AWS Provider PR
-
+name: Publish AWS Provider
 on:
-  pull_request:
-    paths:
-      - kevin.aws/**
-      - kevin.core/**
   push:
     branches: [ main ]
     paths:
       - kevin.aws/**
-
+env:
+  MAJOR_VERSION: "1.0"
 jobs:
-  build_aws_provider:
+  publish-aws-provider:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [17.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name:  CI AWS Provider (Node.js ${{ matrix.node-version }})
-        uses: actions/setup-node@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
       - run: npm run build:allDependencies
         working-directory: ./kevin.aws
         name: Building dependencies
@@ -31,8 +25,10 @@ jobs:
       - run: npm run build --if-present
         working-directory: ./kevin.aws
         name: Build AWS Provider
-      - run: npm run lint
+      - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
+        name: Bump ReAWSdis provider package's version.
+        working-directory: ./kevin.aws    
+      - run: npm publish --access=public
         working-directory: ./kevin.aws
-        name: Lint AWS Provider
-
- 
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
