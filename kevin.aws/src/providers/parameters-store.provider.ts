@@ -18,9 +18,12 @@ export class AwsParametersStoreProvider implements IProvider {
 
         const command = new GetParameterCommand({ Name: `/${key}`, WithDecryption: true });
 
-        const response = await this.client.send(command);
+        try {
+            const response = await this.client.send(command);
 
-        return response.Parameter.Value;
+            return response.Parameter.Value;
+        } catch { }
+        return null;
     }
 
     async setValue(key: string, value: string): Promise<void> {
