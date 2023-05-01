@@ -50,11 +50,10 @@ export class AwsParametersStoreProvider implements IProvider {
     }
 
     async hasKey(key: string): Promise<boolean> {
-        try {
-            await this.getValue(key);
-            return true;
-        } catch { }
-        return false;
+
+        const value = await this.getValue(key);
+
+        return value != null;
 
     }
 
