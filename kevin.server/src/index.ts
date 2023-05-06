@@ -9,9 +9,10 @@ import { EnvironmentsController } from './controllers/environments.controller';
 // import { InMemoryProvider } from '@kevin-infra/core/src/providers/in-memory.provider';
 import cors from 'cors';
 import { KevinErrorHandlerMiddleware } from './middlewares/kevin-errors-handler.middleware'
+import { AwsParametersStoreProvider } from '@kevin-infra/aws';
 
 
- Container.set('kevin.service', new KevinService(new RedisProvider(new Redis("redis://localhost:6379"))));
+ Container.set('kevin.service', new KevinService(new AwsParametersStoreProvider({ region: 'eu-central-1' })));
 
 useContainer(Container);
 

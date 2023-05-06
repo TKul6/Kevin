@@ -1,43 +1,86 @@
-import { Get, JsonController, Param, Put, Body, Post, HttpCode } from "routing-controllers";
-import { Inject, Service } from "typedi";
-import { type IKevinManager, type IKevinValue } from "@kevin-infra/core/interfaces";
-import {  ValueModel } from "../models/value.model";
-import {  KeyValueModel } from "../models/key-value.model";
+import {
+  Get,
+  JsonController,
+  Param,
+  Put,
+  Body,
+  Post,
+  HttpCode,
+} from 'routing-controllers';
+import {
+  Inject,
+  Service,
+} from 'typedi';
+import {
+  type IKevinManager,
+  type IKevinValue,
+} from '@kevin-infra/core/interfaces';
+import { ValueModel } from '../models/value.model';
+import { KeyValueModel } from '../models/key-value.model';
 
-@JsonController("/environments/:id/keys")
+@JsonController(
+  '/environments/:id/keys'
+)
 @Service()
-export class EnvironmentKeysController{
+export class EnvironmentKeysController {
+  constructor(
+    @Inject('kevin.service')
+    private readonly kevinService: IKevinManager
+  ) {}
 
-constructor( @Inject("kevin.service")private readonly kevinService: IKevinManager) {
-}
+  @Get()
+  public async getAllKeys(
+    @Param('id') environmentId: string
+  ): Promise<IKevinValue[]> {
+    await this.kevinService.setCurrentEnvironment(
+      environmentId
+    );
+    return await this.kevinService.getEnvironmentData();
+  }
 
-@Get()
-public  async getAllKeys(@Param("id") environmentId: string): Promise<IKevinValue[]> {
+  @HttpCode(201)
+  @Post()
+  public async addKey(
+    @Param('id') environmentId: string,
+    @Body() kvModel: KeyValueModel
+  ): Promise<IKevinValue> {
+    const currentEnvInfo =
+      await this.kevinService.setCurrentEnvironment(
+        environmentId
+      );
+    await this.kevinService.addKey(
+      kvModel.key,
+      kvModel.value,
+      kvModel.defaultValue
+    );
+    return {
+      key: kvModel.key,
+      value: kvModel.value,
+      environmentInfo: currentEnvInfo,
+    };
+  }
 
-        await this.kevinService.setCurrentEnvironment(environmentId);
-        return await this.kevinService.getEnvironmentData();
-    }
+  @Put('/:key')
+  public async setKey(
+    @Param('id') environmentId: string,
+    @Param('key') key: string,
+    @Body() valueModel: ValueModel
+  ): Promise<IKevinValue> {
+    const envInfo =
+      await this.kevinService.setCurrentEnvironment(
+        environmentId
+      );
 
-@HttpCode(201)
-@Post()
-public async addKey(@Param("id") environmentId: string, @Body() kvModel: KeyValueModel): Promise<IKevinValue> {
+    await this.kevinService.setValue(
+      key,
+      valueModel.value
+    );
 
-   const currentEnvInfo =  await this.kevinService.setCurrentEnvironment(environmentId);
-    await this.kevinService.addKey(kvModel.key, kvModel.value, kvModel.defaultValue);
-    return  {key: kvModel.key, value: kvModel.value, environmentInfo: currentEnvInfo};
-}
-
-    @Put("/:key")
-    public async setKey(@Param("id") environmentId: string, @Param("key") key: string, @Body() valueModel: ValueModel): Promise<IKevinValue> {
-        const envInfo = await this.kevinService.setCurrentEnvironment(environmentId);
-
-        await this.kevinService.setValue(key, valueModel.value);
-
-        const result: IKevinValue = {
-            key,
-            value: valueModel.value,
-            environmentInfo: envInfo
-        }
-        return result;
-    }
+    const result: IKevinValue = {
+      key,
+      value: valueModel.value,
+      environmentInfo: envInfo,
+    };
+    return result;
+  }
 }
