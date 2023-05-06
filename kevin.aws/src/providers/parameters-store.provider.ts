@@ -1,69 +1,126 @@
-import { type IProvider } from "@kevin-infra/core/interfaces"
-import { GetParameterCommand, GetParametersByPathCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm"
+import { type IProvider } from '@kevin-infra/core/interfaces';
+import {
+  GetParameterCommand,
+  GetParametersByPathCommand,
+  PutParameterCommand,
+  SSMClient,
+} from '@aws-sdk/client-ssm';
 
-export class AwsParametersStoreProvider implements IProvider {
+export class AwsParametersStoreProvider
+  implements IProvider
+{
+  private readonly client: SSMClient;
 
-    private readonly client: SSMClient;
-
-    constructor(config: ParametersStoreConfig) {
-
-        if (config.client) {
-            this.client = config.client;
-        } else {
-            this.client = new SSMClient({ region: config.region });
-        }
+  constructor(
+    config: ParametersStoreConfig
+  ) {
+    if (config.client) {
+      this.client = config.client;
+    } else {
+      this.client = new SSMClient({
+        region: config.region,
+      });
     }
+  }
 
-    async getValue(key: string): Promise<string> {
+  async getValue(
+    key: string
+  ): Promise<string> {
+    const fullKey = key.startsWith('/')
+      ? key
+      : `/${key}`;
+    const command =
+      new GetParameterCommand({
+        Name: fullKey,
+        WithDecryption: true,
+      });
 
-        const command = new GetParameterCommand({ Name: `/${key}`, WithDecryption: true });
+    try {
+      const response =
+        await this.client.send(command);
 
-        try {
-            const response = await this.client.send(command);
+      return response.Parameter.Value;
+    } catch {}
+    return null;
+  }
 
-            return response.Parameter.Value;
-        } catch { }
-        return null;
-    }
+  async setValue(
+    key: string,
+    value: string
+  ): Promise<void> {
+    const fullKey = key.startsWith('/')
+      ? key
+      : `/${key}`;
+    await this.client.send(
+      new PutParameterCommand({
+        Name: fullKey,
+        Value: value,
+        Type: 'String',
+        Overwrite: true,
+      })
+    );
+  }
 
-    async setValue(key: string, value: string): Promise<void> {
+  async getValueRange(
+    keyPrefix: string
+  ): Promise<string[]> {
+    const keys = await this.getKeys(
+      keyPrefix
+    );
 
-        await this.client.send(new PutParameterCommand({ Name: `/${key}`, Value: value, Type: "String", Overwrite: true }))
-    }
+    const promises = keys
+      .map(
+        async (key) =>
+          await this.client.send(
+            new GetParameterCommand({
+              Name: `/${key}`,
+              WithDecryption: true,
+            })
+          )
+      )
+      .map(
+        async (promise) =>
+          await promise.then(
+            (r) => r.Parameter.Value
+          )
+      );
 
-    async getValueRange(keyPrefix: string): Promise<string[]> {
+    return await Promise.all(promises);
+  }
 
-        const keys = await this.getKeys(keyPrefix);
+  async getKeys(
+    keyPrefix: string
+  ): Promise<string[]> {
+    const command =
+      new GetParametersByPathCommand({
+        Path: `/${keyPrefix}`,
+        Recursive: true,
+        WithDecryption: true,
+      });
 
-        const promises = keys.map(async key => await this.client.send(new GetParameterCommand({ Name: key, WithDecryption: true })))
-            .map(async promise => await promise.then(r => r.Parameter.Value));
+    const response =
+      await this.client.send(command);
+    return response.Parameters.map(
+      (p) => p.Name.slice(1)
+    );
+  }
 
-        return await Promise.all(promises);
-    }
+  async hasKey(
+    key: string
+  ): Promise<boolean> {
+    const value = await this.getValue(
+      key
+    );
 
-    async getKeys(keyPrefix: string): Promise<string[]> {
+    return value != null;
+  }
 
-        const command = new GetParametersByPathCommand({ Path: `/${keyPrefix}`, Recursive: true, WithDecryption: true })
-
-        const response = await this.client.send(command);
-        return response.Parameters.map(p => p.Name);
-    }
-
-    async hasKey(key: string): Promise<boolean> {
-
-        const value = await this.getValue(key);
-
-        return value != null;
-
-    }
-
-    getDelimiter(): string {
-        return "/";
-    }
-
+  getDelimiter(): string {
+    return '/';
+  }
 }
 
 export interface ParametersStoreConfig {
-    client?: SSMClient
-    region: string
+  client?: SSMClient;
+  region: string;
 }

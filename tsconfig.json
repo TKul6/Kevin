@@ -1,22 +1,18 @@
 {
-    "strict": false,
-    "sourceMap": true,
-    "compilerOptions": {
-        "skipLibCheck": true,
-        "outDir": "./dist",
-        "strictNullChecks": false,
-        "lib": [
-            "es2015"
-        ],
-        "esModuleInterop": true,
-        "declaration": true
-    },
-    "exclude": [
-        "**/dist",
-        "**/node_modules"
-    ],
-    "include": [
-        "**/src",
-        "**/tests"
-    ]
+  "strict": false,
+  "sourceMap": true,
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "strictNullChecks": false,
+    "lib": ["es2015"],
+    "esModuleInterop": true,
+    "declaration": true
+  },
+  "exclude": [
+    "**/dist",
+    "**/node_modules"
+  ],
+  "include": ["**/src", "**/tests"]
 }
