@@ -1,0 +1,25 @@
+.container {
+    padding-top: 24px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.container .loaderContainer {
+    width: 60px;
+    color: #29c969;
+}
+
+.container .text {
+
+    padding-top: 16px;
+    color: rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+    font-size: 24px;
+}
+
+.container .text.error {
+    color: #f78b8b;
+}

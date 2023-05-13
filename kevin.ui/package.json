@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@agney/react-loading": "^0.1.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fontsource/roboto": "^4.5.8",
@@ -56,5 +57,6 @@
   },
   "workspaces": [
     "../kevin.core"
-  ]
+  ],
+  "proxy": "http://localhost:3000"
 }

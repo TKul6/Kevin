@@ -15,11 +15,13 @@ import IconButton from '@mui/material/IconButton';
 import { CreateEnvironmentDialog } from './dialogs/createEnvironmentDialog';
 import { Header } from '../../app/components/header/header';
 import { openToast } from '../system/systemSlice';
+import { Loader } from '../../app/components/loader/loader';
 
 
 
 export function EnvironmentsTree() {
   const environments = useAppSelector((state) => state.environments.environments);
+  const environmentStatus = useAppSelector((state) => state.environments.status);
   const dispatch = useAppDispatch();
 
 
@@ -78,7 +80,9 @@ export function EnvironmentsTree() {
         <Header title='Environments' />
         <Divider></Divider>
         <div className={styles.item}>
-          {environments.length > 0 ? tree : <div>Empty State</div>}
+           <Loader status={environmentStatus} errorMessage="Failed to load environments" loadingMessage="Loading Environments ...">
+          {tree}
+          </Loader>
           <div>
           </div>
         </div>
