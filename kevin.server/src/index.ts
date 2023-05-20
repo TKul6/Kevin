@@ -10,8 +10,9 @@ import Redis from 'ioredis';
 import { EnvironmentKeysController } from './controllers/kv.controller';
 import { EnvironmentsController } from './controllers/environments.controller';
 // import { InMemoryProvider } from '@kevin-infra/core/src/providers/in-memory.provider';
-import cors from 'cors';
 import { KevinErrorHandlerMiddleware } from './middlewares/kevin-errors-handler.middleware';
+import * as express from  'express';
+import { resolve } from 'path';
 // import { AwsParametersStoreProvider } from '@kevin-infra/aws';
 
 // Container.set('kevin.service', new KevinService(new AwsParametersStoreProvider({ region: 'eu-central-1' })));
@@ -38,7 +39,9 @@ const app = createExpressServer({
   defaultErrorHandler: false,
 });
 
-app.use(cors());
+
+app.use(express.static(resolve(__dirname, "public")));
+
 app.listen(3000);
 console.log(
   'App is running on port 3000'

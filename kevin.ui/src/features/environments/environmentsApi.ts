@@ -2,12 +2,10 @@ import { IEnvironmentMetaData, IKevinValue } from "@kevin-infra/core/interfaces"
 import { AddKeyModel } from "../environmentInfo/dialogs/addKeyDialog";
 import { createEnvironmentModel } from "./environmentsSlice";
 
-const base = "http://localhost:3000";
-
 export async function getEnvironments(): Promise<Array<IEnvironmentMetaData>> {
 
 
-  const response = await fetch(`${base}/environments`);
+  const response = await fetch("/environments");
 
   if (response.status === 200) {
     const environments = await response.json();
@@ -20,7 +18,7 @@ export async function getEnvironments(): Promise<Array<IEnvironmentMetaData>> {
 
 export async function getEnvironmentKeys(environmentId: string): Promise<Array<IKevinValue>> {
 
-  const url = `${base}/environments/${encodeURIComponent(environmentId)}/keys`;
+  const url = `/environments/${encodeURIComponent(environmentId)}/keys`;
 
   const response = await fetch(url);
 
@@ -36,7 +34,7 @@ export async function getEnvironmentKeys(environmentId: string): Promise<Array<I
 export async function setEnvironmentKey(environmentId: string, key: string, value: string): Promise<IKevinValue> {
 
 
-  const url = `${base}/environments/${encodeURIComponent(environmentId)}/keys/${encodeURIComponent(key)}`;
+  const url = `/environments/${encodeURIComponent(environmentId)}/keys/${encodeURIComponent(key)}`;
 
   const response = await fetch(url, { method: 'PUT', body: JSON.stringify({ value: value }), headers: { 'Content-Type': 'application/json' }, });
 
@@ -51,7 +49,7 @@ export async function setEnvironmentKey(environmentId: string, key: string, valu
 export async function createNewEnvironment(createModel: createEnvironmentModel): Promise<IEnvironmentMetaData> {
 
 
-  const response = await fetch(`${base}/environments/${encodeURIComponent(createModel.parentId)}`, { method: 'POST', body: JSON.stringify({ environmentName: createModel.name }), headers: { 'Content-Type': 'application/json' } });
+  const response = await fetch(`/environments/${encodeURIComponent(createModel.parentId)}`, { method: 'POST', body: JSON.stringify({ environmentName: createModel.name }), headers: { 'Content-Type': 'application/json' } });
 
   switch (response.status) {
     case 201:
@@ -69,7 +67,7 @@ export async function createNewEnvironment(createModel: createEnvironmentModel):
 export async function addNewKey(addKeyModel: AddKeyModel): Promise<IKevinValue> {
 
 
-  const response = await fetch(`${base}/environments/${encodeURIComponent(addKeyModel.environmentId)}/keys`, { method: 'POST', body: JSON.stringify(addKeyModel), headers: { 'Content-Type': 'application/json' } });
+  const response = await fetch(`/environments/${encodeURIComponent(addKeyModel.environmentId)}/keys`, { method: 'POST', body: JSON.stringify(addKeyModel), headers: { 'Content-Type': 'application/json' } });
 
   if (response.status === 201) {
     const newEnvironment = await response.json();

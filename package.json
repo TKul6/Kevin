@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:server": "npm run build --prefix kevin.server",
+    "build:client": "npm run build --prefix kevin.ui",
+    "build:solution": "npm run build:server && npm run build:client",
+    "ui:copy-dist": "cp -R /kevin.ui/build/. /kevin.server/dist/public"
   },
   "repository": {
     "type": "git",
