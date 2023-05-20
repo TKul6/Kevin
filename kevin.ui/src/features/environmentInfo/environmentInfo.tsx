@@ -11,12 +11,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { openAddKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo} from './environmentInfoSlice';
+import { openAddKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import Tooltip from '@mui/material/Tooltip';
 import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
 import { SetKeyDialog } from './dialogs/setKeyDialog';
+import { Loader } from '../../app/components/loader/loader';
 
 
 
@@ -25,11 +26,9 @@ import { SetKeyDialog } from './dialogs/setKeyDialog';
 export function EnvironmentInfo() {
 
   const environmentInfo = useAppSelector(selectEnvironmentInfo);
+  const status = useAppSelector(selectLoadingStatus);
 
 const dispatch = useAppDispatch();
-  if (environmentInfo.status !== 'loaded') {
-    return (<div>Empty State</div>)
-  }
 
   return (
     <div className={styles.contentContainer}>
@@ -37,6 +36,8 @@ const dispatch = useAppDispatch();
       <Divider></Divider>
       <div className={styles.item}>
 
+<Loader status={status} loadingMessage="Loading environment keys ... Don't worry, they're out there!" errorMessage="Failed to load Environment Keys"
+notLoadedMessage="Select an environment to revel it's keys">
         <TableContainer component={Paper}>
           <Table aria-label="Keys table">
             <TableHead>
@@ -64,9 +65,11 @@ const dispatch = useAppDispatch();
             </TableBody>
           </Table>
         </TableContainer>
-      </div>
-      <SetKeyDialog />
+        <SetKeyDialog />
       <AddKeyDialog />
+        </Loader>
+      </div>
+      
     </div>
 
 

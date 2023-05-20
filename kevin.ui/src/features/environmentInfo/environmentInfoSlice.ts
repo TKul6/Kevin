@@ -2,13 +2,14 @@ import { IKevinValue } from '@kevin-infra/core/interfaces';
 import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
 import { DialogState } from '../../app/helpers/dialog-helpers';
 import { RootState } from '../../app/store';
+import { LoadingStatus } from '../../app/types';
 import { addNewKey, getEnvironmentKeys, setEnvironmentKey } from '../environments/environmentsApi';
 import { selectEnvironment } from '../environments/environmentsSlice';
 import { AddKeyModel } from './dialogs/addKeyDialog';
 
 export interface EnvironmentInfoState {
     environmentKeys: Array<IKevinValue>,
-    status: 'not loaded' | 'loading' | 'loaded' | 'failed' | 'no data';
+    status: LoadingStatus;
     selectedEnvironmentId: string | null,
     editedKevinValue: IKevinValue | null
     addKeyStatus: DialogState
@@ -16,7 +17,7 @@ export interface EnvironmentInfoState {
 }
 
 const initialState: EnvironmentInfoState = {
-    status: 'not loaded',
+    status: LoadingStatus.NotLoaded,
     environmentKeys: [],
     selectedEnvironmentId: null,
     editedKevinValue: null,
@@ -68,15 +69,15 @@ export const environmentInfoSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(loadEnvironmentKeys.pending, (state) => {
-                state.status = 'loading';
+                state.status = LoadingStatus.Loading;
             })
             .addCase(loadEnvironmentKeys.fulfilled, (state, action) => {
-                state.status = action.payload.length > 0 ? 'loaded' : 'no data';
+                state.status = action.payload.length > 0 ? LoadingStatus.Loaded : LoadingStatus.NoData;
 
                 state.environmentKeys = action.payload;
             })
             .addCase(loadEnvironmentKeys.rejected, (state) => {
-                state.status = 'failed';
+                state.status = LoadingStatus.Failed;
             })
             .addCase(selectEnvironment, (state, action) => {
                 state.selectedEnvironmentId = action.payload;
@@ -122,6 +123,8 @@ export const selectSelectedEnvironmentId = (state: RootState) => state.environme
 export const selectEditedKevinValue = (state: RootState) => state.environmentInfo.editedKevinValue;
 
 export const selectAddKeyStatus = (state: RootState) => state.environmentInfo.addKeyStatus;
+
+export const selectLoadingStatus = (state: RootState) => state.environmentInfo.status;
 
 
 export default environmentInfoSlice.reducer;

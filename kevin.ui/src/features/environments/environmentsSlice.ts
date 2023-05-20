@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { createNewEnvironment, getEnvironments } from './environmentsApi';
 import { IEnvironmentMetaData } from "@kevin-infra/core/interfaces"
+import { LoadingStatus } from '../../app/types';
 
 export interface createEnvironmentModel {
   parentId: string;
@@ -9,15 +10,15 @@ export interface createEnvironmentModel {
 }
 
 export interface EnvironmentsState {
-  environments: Array<IEnvironmentMetaData>,
-  status: 'idle' | 'loading' | 'failed';
+  environments: Array<IEnvironmentMetaData>;
+  status: LoadingStatus;
   selectedEnvironment: IEnvironmentMetaData | null;
-  createEnvironmentModel: createEnvironmentModel
+  createEnvironmentModel: createEnvironmentModel;
 }
 
 const initialState: EnvironmentsState = {
   environments: [],
-  status: "idle",
+  status: LoadingStatus.NotLoaded,
   selectedEnvironment: null,
   createEnvironmentModel: null
 
@@ -55,15 +56,14 @@ export const environmentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadEnvironments.pending, (state) => {
-        state.status = 'loading';
+        state.status = LoadingStatus.Loading;
       })
       .addCase(loadEnvironments.fulfilled, (state, action) => {
-        state.status = 'idle';
-        console.log("action.payload: " + JSON.stringify(action.payload));
+        state.status = LoadingStatus.Loaded;
         state.environments = action.payload;
       })
       .addCase(loadEnvironments.rejected, (state) => {
-        state.status = 'failed';
+        state.status = LoadingStatus.Failed;
       })
       .addCase(selectEnvironment, (state, action) => {
         const selectedEnvironment = state.environments.find(e => e.name === action.payload);
