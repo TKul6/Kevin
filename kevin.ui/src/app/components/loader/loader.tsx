@@ -1,7 +1,6 @@
 import styles from "./loader.module.css";
 import { LoadingStatus } from "../../types";
 import { BallTriangle } from '@agney/react-loading';
-import { style } from "@mui/system";
 
 export interface LoaderInfo {
     status: LoadingStatus;
