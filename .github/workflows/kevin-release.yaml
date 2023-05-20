@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm run install:solution
+        name: Installing dependencies
       - run: npm run build:solution
         name: Building dependencies
       - run: npm run ui:copy-dist 
