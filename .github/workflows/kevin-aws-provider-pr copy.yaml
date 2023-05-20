@@ -3,36 +3,36 @@ name: Kevin AWS Provider PR
 on:
   pull_request:
     paths:
-      - kevin.redis/**
+      - kevin.aws/**
       - kevin.core/**
   push:
     branches: [ main ]
     paths:
-      - kevin.redis/**
+      - kevin.aws/**
 
 jobs:
-  build_redis_provider:
+  build_aws_provider:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [17.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name:  CI Redis Provider (Node.js ${{ matrix.node-version }})
+      - name:  CI AWS Provider (Node.js ${{ matrix.node-version }})
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm run build:allDependencies
-        working-directory: ./kevin.redis
+        working-directory: ./kevin.aws
         name: Building dependencies
       - run: npm ci
-        working-directory: ./kevin.redis
-        name: Install Redis Provider dependencies
+        working-directory: ./kevin.aws
+        name: Install AWS Provider dependencies
       - run: npm run build --if-present
-        working-directory: ./kevin.redis
-        name: Build Redis Provider
+        working-directory: ./kevin.aws
+        name: Build AWS Provider
       - run: npm run lint
-        working-directory: ./kevin.redis
-        name: Lint Redis Provider
+        working-directory: ./kevin.aws
+        name: Lint AWS Provider
 
  
