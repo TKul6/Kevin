@@ -6,7 +6,7 @@
     "build:server": "npm run build --prefix kevin.server",
     "build:client": "npm run build --prefix kevin.ui",
     "build:solution": "npm run build:server && npm run build:client",
-    "install:server": "npm run build:allDependencies --prefix kevin.server",
+    "install:server": "npm run build:allDependencies --prefix kevin.server && npm ci --prefix kevin.server",
     "install:client": "npm ci --prefix kevin.ui",
     "install:solution": "npm run install:server && npm run install:client",
     "ui:copy-dist": "cp -R /kevin.ui/build/. /kevin.server/dist/public"
