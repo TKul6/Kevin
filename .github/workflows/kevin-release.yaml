@@ -7,11 +7,8 @@ on:
       - .github/workflows/kevin-release.yaml
 
 jobs:
-  build_aws_provider:
+  Build_dist:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
       - name: Release Website
@@ -24,16 +21,23 @@ jobs:
         name: Building dependencies
       - run: npm run ui:copy-dist
         name: Copy UI dist.
+  Zip:
+    runs-on: ubuntu-latest
+    steps:
       - name: Zip solution
         uses: vimtor/action-zip@v1.1
         with:
           files: kevin.server/dist kevin.server/package.json
           dest: kevin.server.zip
+  Create_Release:
+    runs-on: ubuntu-latest
+    steps:
       - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           prerelease: true
           draft: true
+          automatic_release_tag: 'test'
           title: 'Kevin Release test'
           files: |
             kevin.server.zip
