@@ -18,6 +18,7 @@ import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
 import { SetKeyDialog } from './dialogs/setKeyDialog';
 import { Loader } from '../../app/components/loader/loader';
+import { LoadingStatus } from '../../app/types';
 
 
 
@@ -32,7 +33,7 @@ const dispatch = useAppDispatch();
 
   return (
     <div className={styles.contentContainer}>
-      <Header title='Environment Info' commands={[{ name: 'Create', tooltip: 'Create new key', action: openAddKeyDialog() }]} />
+      <Header title='Environment Info' commands={[{ name: 'Create', tooltip: 'Create new key', action: openAddKeyDialog(), hidden: status !== LoadingStatus.Loaded }]} />
       <Divider></Divider>
       <div className={styles.item}>
 

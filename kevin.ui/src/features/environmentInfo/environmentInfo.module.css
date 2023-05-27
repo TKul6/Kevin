@@ -12,6 +12,17 @@
 
 .actionsColumn {
     width: 100px;
+   }
+
+td.actionsColumn {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+}
+
+tr:hover td.actionsColumn {
+    opacity: 1;
 }
 
 .actionItem div {
