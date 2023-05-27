@@ -12,7 +12,8 @@ export interface HeaderInfo {
 export interface HeaderCommand {
     name: string;
     tooltip: String;
-    action: Action
+    action: Action;
+    hidden: boolean;
 }
 
 const DEFAULT_PROPS: Partial<HeaderInfo> = {
@@ -27,8 +28,10 @@ const componentProps = {...DEFAULT_PROPS, ...props}
 
     function renderCommand(command: HeaderCommand) {
         return (<Tooltip title={command.tooltip}>
-            <Button variant="contained" onClick={() => dispatch(command.action)}>{command.name}</Button>
-        </Tooltip>)
+            
+            <Button variant="contained" onClick={() => dispatch(command.action)} disabled={command.hidden}>{command.name}</Button>
+        </Tooltip>
+        )
     }
 
     return (
@@ -36,7 +39,7 @@ const componentProps = {...DEFAULT_PROPS, ...props}
             <div className={styles.headerText}>{componentProps.title}
             </div>
             <div className="headerCommands">
-                {componentProps.commands.map((command) => renderCommand(command))}
+                {componentProps.commands.filter(command => !command.hidden).map((command) => renderCommand(command))}
 
             </div>
         </div>
