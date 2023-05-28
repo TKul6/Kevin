@@ -42,7 +42,7 @@ export function EnvironmentsTree() {
       return (<div>Failed to find root node!</div>)
     }
     return (
-      <TreeItem nodeId={currentEnvironment.id} label={<div className={styles.treeItemContainer}>
+      <TreeItem key={currentEnvironment.id} nodeId={currentEnvironment.id} label={<div className={styles.treeItemContainer}>
         <div className='treeItemText'>{currentEnvironment.name}</div>
         <div className={styles.commandsContainer}>
           <Tooltip title="Create environment under this node" placement="top">

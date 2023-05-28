@@ -50,7 +50,7 @@ notLoadedMessage="Select an environment to revel it's keys">
             </TableHead>
             <TableBody>
               {environmentInfo.environmentKeys.map((kvInfo: IKevinValue) => (
-                <TableRow>
+                <TableRow key={kvInfo.key}>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.key}</TableCell>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.value}</TableCell>
                   <TableCell className={styles.actionsColumn} align="right">
