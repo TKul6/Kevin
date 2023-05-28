@@ -18,7 +18,8 @@ export const store = configureStore({
     .prepend(createEnvironmentFailed.middleware)
     .prepend(createEnvironmentSucceeded.middleware)
     .prepend(addKeySuccessMiddleware.middleware)
-    .prepend(addKeyFailedMiddleware.middleware)
+    .prepend(addKeyFailedMiddleware.middleware),
+    devTools: true
 });
 
 export type AppDispatch = typeof store.dispatch;
