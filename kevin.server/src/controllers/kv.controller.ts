@@ -6,6 +6,8 @@ import {
   Body,
   Post,
   HttpCode,
+  Delete,
+  ForbiddenError,
 } from 'routing-controllers';
 import {
   Inject,
@@ -15,8 +17,8 @@ import {
   type IKevinManager,
   type IKevinValue,
 } from '@kevin-infra/core/interfaces';
-import { ValueModel } from '../models/value.model';
-import { KeyValueModel } from '../models/key-value.model';
+import { type ValueModel } from '../models/value.model';
+import { type KeyValueModel } from '../models/key-value.model';
 
 @JsonController(
   '/environments/:id/keys'
@@ -26,7 +28,7 @@ export class EnvironmentKeysController {
   constructor(
     @Inject('kevin.service')
     private readonly kevinService: IKevinManager
-  ) {}
+  ) { }
 
   @Get()
   public async getAllKeys(
@@ -83,4 +85,18 @@ export class EnvironmentKeysController {
     };
     return result;
   }
+
+  @Delete('/:key')
+  public async deleteKey(@Param('id') environmentId: string,
+    @Param('key') key: string): Promise<void> {
+
+    if (environmentId === "root") {
+      throw new ForbiddenError("Deleting keys from root environment is not allowed");
+    }
+
+    await this.kevinService.setCurrentEnvironment(environmentId);
+    return this.kevinService.deleteKey(key);
+
+  }
+
 }
