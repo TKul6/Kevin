@@ -95,7 +95,8 @@ export class EnvironmentKeysController {
     }
 
     await this.kevinService.setCurrentEnvironment(environmentId);
-    return this.kevinService.deleteKey(key);
+    await this.kevinService.deleteKey(key);
+    return null;
 
   }
 
