@@ -1,7 +1,8 @@
 import { type IProvider } from "../interfaces";
 export class InMemoryProvider implements IProvider {
+
     getDelimiter(): string {
-         return ".";
+        return ".";
     }
 
     private readonly store = new Map<string, string>();
@@ -28,6 +29,10 @@ export class InMemoryProvider implements IProvider {
 
     async hasKey(key: string): Promise<boolean> {
         return await Promise.resolve(this.store.has(key));
+    }
+
+    async deleteKey(key: string): Promise<any> {
+        return await Promise.resolve(this.store.delete(key));
     }
 
 }

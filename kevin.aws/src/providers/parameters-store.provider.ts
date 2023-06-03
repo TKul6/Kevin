@@ -1,5 +1,6 @@
 import { type IProvider } from '@kevin-infra/core/interfaces';
 import {
+  DeleteParameterCommand,
   GetParameterCommand,
   GetParametersByPathCommand,
   PutParameterCommand,
@@ -7,8 +8,7 @@ import {
 } from '@aws-sdk/client-ssm';
 
 export class AwsParametersStoreProvider
-  implements IProvider
-{
+  implements IProvider {
   private readonly client: SSMClient;
 
   constructor(
@@ -40,7 +40,7 @@ export class AwsParametersStoreProvider
         await this.client.send(command);
 
       return response.Parameter.Value;
-    } catch {}
+    } catch { }
     return null;
   }
 
@@ -114,6 +114,15 @@ export class AwsParametersStoreProvider
 
     return value != null;
   }
+
+  public async deleteKey(key: string): Promise<any> {
+    const command = new DeleteParameterCommand({
+      Name: key,
+    });
+
+    return await this.client.send(command);
+  }
+
 
   getDelimiter(): string {
     return '/';
