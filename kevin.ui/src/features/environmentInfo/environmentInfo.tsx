@@ -24,6 +24,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TablePaginationActions from '@mui/material/TablePagination/TablePaginationActions';
 import { ChangeEvent } from 'react';
 import React from 'react';
+import { IconCommand } from '../../app/components/icon-command/icon-command';
 
 
 
@@ -67,17 +68,20 @@ notLoadedMessage="Select an environment to revel it's keys">
               </TableRow>
             </TableHead>
             <TableBody>
-              {(rowsPerPage > 0 ?   environmentInfo.environmentKeys.slice(rowsPerPage * page,rowsPerPage * page + rowsPerPage): environmentInfo.environmentKeys.slice(0, rowsPerPage)).map((kvInfo: IKevinValue) => (
+              {(rowsPerPage > 0 ? environmentInfo.environmentKeys.slice(rowsPerPage * page,rowsPerPage * page + rowsPerPage): environmentInfo.environmentKeys.slice(0, rowsPerPage)).map((kvInfo: IKevinValue) => (
                 <TableRow key={kvInfo.key}>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.key}</TableCell>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.value}</TableCell>
                   <TableCell className={styles.actionsColumn} align="right">
 
-                    <Tooltip title={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? 'Stop inherit and set value' : 'Set value'} placement="top">
-                      <IconButton aria-label="set value" size='small' onClick={() => dispatch(openSetKeyValueDialog(kvInfo))}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                  <IconCommand tooltip={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? 'Stop inherit and set value' : 'Set value'}
+                    tooltipPlacement="top"
+                    ariaLabel="set value"
+                    fontSize="small"
+                    action={openSetKeyValueDialog(kvInfo)}>
+                       <EditIcon fontSize="small" />
+                    </IconCommand>
+                    
                   </TableCell>
                 </TableRow>
               ))}
