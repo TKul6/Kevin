@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { addKeyFailedMiddleware, addKeySuccessMiddleware, keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddleware } from '../features/environmentInfo/environmentInfoMiddlewares';
+import { addKeyFailedMiddleware, addKeySuccessMiddleware, inheritKeyMiddleware, keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddleware } from '../features/environmentInfo/environmentInfoMiddlewares';
 import environmentInfoSlice from '../features/environmentInfo/environmentInfoSlice';
 import systemSlice from '../features/system/systemSlice';
 import environmentsReducer from '../features/environments/environmentsSlice';
@@ -18,8 +18,9 @@ export const store = configureStore({
     .prepend(createEnvironmentFailed.middleware)
     .prepend(createEnvironmentSucceeded.middleware)
     .prepend(addKeySuccessMiddleware.middleware)
-    .prepend(addKeyFailedMiddleware.middleware),
-    devTools: true
+    .prepend(addKeyFailedMiddleware.middleware)
+    .prepend(inheritKeyMiddleware.middleware),
+  devTools: true
 });
 
 export type AppDispatch = typeof store.dispatch;

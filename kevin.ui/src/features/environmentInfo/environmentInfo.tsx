@@ -9,11 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { openAddKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
+import { openAddKeyDialog, openInheritKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
-import Tooltip from '@mui/material/Tooltip';
 import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
 import { SetKeyDialog } from './dialogs/setKeyDialog';
@@ -25,7 +23,8 @@ import TablePaginationActions from '@mui/material/TablePagination/TablePaginatio
 import { ChangeEvent } from 'react';
 import React from 'react';
 import { IconCommand } from '../../app/components/icon-command/icon-command';
-
+import { InheritKeyDialog } from './dialogs/inheritKeyDialog';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 
 
@@ -81,7 +80,15 @@ notLoadedMessage="Select an environment to revel it's keys">
                     action={openSetKeyValueDialog(kvInfo)}>
                        <EditIcon fontSize="small" />
                     </IconCommand>
-                    
+
+                  {environmentInfo.selectedEnvironmentId !== "root" &&  kvInfo.environmentInfo.id === environmentInfo.selectedEnvironmentId && (
+                  <IconCommand tooltip="Inherit value from parent environment"
+                    tooltipPlacement="top"
+                    ariaLabel="inherit value"
+                    fontSize="small"
+                    action={openInheritKeyDialog(kvInfo)}>
+                       <ArrowUpwardIcon fontSize="small" />
+                    </IconCommand>)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -110,6 +117,7 @@ notLoadedMessage="Select an environment to revel it's keys">
         </TableContainer>
         <SetKeyDialog />
       <AddKeyDialog />
+      <InheritKeyDialog />
         </Loader>
       </div>
       

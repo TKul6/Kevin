@@ -1,7 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { selectEnvironment } from '../environments/environmentsSlice';
 import { openToast } from '../system/systemSlice';
-import { addKey, closeAddKeyDialog, loadEnvironmentKeys, setKeyValue } from './environmentInfoSlice';
+import { addKey, closeAddKeyDialog, closeInheritKeyDialog, inheritKey, loadEnvironmentKeys, setKeyValue } from './environmentInfoSlice';
 
 export const keysLoaderMiddleware = createListenerMiddleware();
 
@@ -51,6 +51,27 @@ export const addKeyFailedMiddleware = createListenerMiddleware()
 
 SetValueFailedMiddleware.startListening({
     actionCreator: addKey.rejected,
+    effect: (action, listenerApi) => {
+        const message = action.error.message;
+        listenerApi.dispatch(openToast({ text: message, level: 'error' }));
+    }
+});
+
+
+export const inheritKeyMiddleware = createListenerMiddleware();
+
+inheritKeyMiddleware.startListening({
+    actionCreator: inheritKey.fulfilled,
+    effect: (action, listenerApi) => {
+        const message = `Key '${action.payload.key}' is now inherits from '${action.payload.environmentInfo.name}'.`;
+        listenerApi.dispatch(openToast({ text: message, level: 'success' }));
+        listenerApi.dispatch(closeInheritKeyDialog());
+    }
+});
+
+
+inheritKeyMiddleware.startListening({
+    actionCreator: inheritKey.rejected,
     effect: (action, listenerApi) => {
         const message = action.error.message;
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
