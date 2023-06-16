@@ -1,7 +1,7 @@
 import { Button,  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { Loader } from "../../../app/components/loader/loader";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { closeInheritKeyDialog, selectKeyToInherit, inheritKey as InheritKeyAction, selectParentKey, selectParentKeyStatus } from "../environmentInfoSlice";
+import { closeInheritKeyDialog, selectKeyToInherit, inheritKey as InheritKeyAction, selectParentKey, selectParentKeyStatus } from "../state";
 import styles from './dialog.module.css'
 export function InheritKeyDialog() {
 

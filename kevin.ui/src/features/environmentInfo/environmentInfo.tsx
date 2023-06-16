@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
-import { openAddKeyDialog, openInheritKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
+import { openAddKeyDialog, openInheritKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './state';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
 import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
