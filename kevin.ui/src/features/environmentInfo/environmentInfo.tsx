@@ -1,5 +1,5 @@
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {  useAppSelector } from '../../app/hooks';
 import styles from './environmentInfo.module.css';
 import Divider from '@mui/material/Divider';
 import Table from '@mui/material/Table';
@@ -36,7 +36,6 @@ export function EnvironmentInfo() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-const dispatch = useAppDispatch();
 
   function handleChangeRowsPerPage(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     setRowsPerPage(parseInt(event.target.value));
