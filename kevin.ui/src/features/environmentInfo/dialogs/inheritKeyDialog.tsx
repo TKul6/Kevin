@@ -1,11 +1,12 @@
 import { Button,  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { getEnvironment } from "../../../app/helpers/environment-helpers";
+import { Loader } from "../../../app/components/loader/loader";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectEnvironments } from "../../environments/environmentsSlice";
-import { closeInheritKeyDialog, selectKeyToInherit, selectSelectedEnvironmentId, inheritKey as InheritKeyAction } from "../environmentInfoSlice";
+import { closeInheritKeyDialog, selectKeyToInherit, inheritKey as InheritKeyAction, selectParentKey, selectParentKeyStatus } from "../environmentInfoSlice";
 import styles from './dialog.module.css'
 export function InheritKeyDialog() {
 
+const parentKey = useAppSelector(selectParentKey);
+const parentKeyStatus = useAppSelector(selectParentKeyStatus);
 
   const dispatch = useAppDispatch();
   function closeDialog() {
@@ -26,10 +27,16 @@ return (<Dialog open={keyToInherit != null} onClose={closeDialog}>
         <DialogContent dividers>
           <DialogContentText>
             <div className='dialog-container'>
+              <Loader status={parentKeyStatus} >
               <div>Are you sure you want to inherit key '{keyToInherit?.key}'?</div>
-              <div className={styles.item}>new Value will be '<b>NEW VALUE</b>' from the environment 'ENVIRONMENT'</div>
-            </div>
+            
+              <div className={styles.item}>new Value will be '<b>{parentKey?.value}</b>' from the environment '{parentKey?.environmentInfo.name}'</div>
+            
+            </Loader></div>
+            
+  
           </DialogContentText>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={inheritKey} variant="contained">I'm sure Kevin</Button>

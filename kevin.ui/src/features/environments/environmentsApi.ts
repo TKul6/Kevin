@@ -91,6 +91,17 @@ export async function deleteKey(key: IKevinValue): Promise<void> {
     return;
   }
 
-  throw new Error("Failed inherit key");
+  throw new Error("Failed to inherit key");
 
+}
+
+export async function getKey(key: string, environmentId: string): Promise<IKevinValue> {
+
+  const response = await fetch(`/environments/${encodeURIComponent(environmentId)}/keys/${encodeURIComponent(key)}`);
+
+  if (response.status === 200) {
+    return await response.json();
+  }
+
+  throw new Error("Failed to get key");
 }
