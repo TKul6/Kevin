@@ -30,6 +30,10 @@ export class RedisProvider implements IProvider {
         return this.client.exists(key);
     }
 
+    async deleteKey(key: string): Promise<void> {
+        return this.client.del(key);
+    }
+
     getDelimiter(): string {
         return ":";
     }

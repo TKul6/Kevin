@@ -1,5 +1,5 @@
 import 'jest';
-import { type IEnvironmentInformation,  type IEnvironmentMetaData, type IProvider } from '@kevin-infra/core/interfaces';
+import { type IEnvironmentInformation, type IEnvironmentMetaData, type IProvider } from '@kevin-infra/core/interfaces';
 import { KevinService } from '@kevin-infra/core/services';
 import { anyString, anything, instance, mock, verify, when } from "ts-mockito"
 
@@ -131,7 +131,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.getEnvironments()).rejects.toThrow(Error)
+            await expect(async () => await service.getEnvironments()).rejects.toThrow(Error)
 
             // Assert
             verify(providerMock.getValueRange(KEVIN_INTERNAL_ENVIRONMENT_PREFIX + ".")).once();
@@ -217,7 +217,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow("Environment not found");
+            await expect(async () => await service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects.toThrow("Environment not found");
 
             // Assert
 
@@ -234,7 +234,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects
+            await expect(async () => await service.setCurrentEnvironment(ROOT_ENVIRONMENT_ID)).rejects
                 .toThrow("Failed to initialize environment info. Please make sure the data in the repository is valid for environment " + ROOT_ENVIRONMENT_ID);
 
             // Assert
@@ -290,7 +290,7 @@ describe("KevinService", () => {
             const childEnvironment: IEnvironmentInformation = {
                 name: childEnvironmentName,
                 id: childEnvironmentId,
-                parentEnvironment: parentEnvironment
+                parentEnvironment
 
             }
 
@@ -331,7 +331,7 @@ describe("KevinService", () => {
             const childEnvironment: IEnvironmentInformation = {
                 name: childEnvironmentName,
                 id: childEnvironmentId,
-                parentEnvironment: parentEnvironment
+                parentEnvironment
 
             }
 
@@ -362,7 +362,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.getValue(keyName)).rejects
+            await expect(async () => await service.getValue(keyName)).rejects
                 .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
@@ -393,7 +393,7 @@ describe("KevinService", () => {
         })
 
 
-      
+
 
     })
 
@@ -453,7 +453,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(async () => await service.setValue(keyName, keyValue)).rejects
+            await expect(async () => { await service.setValue(keyName, keyValue); }).rejects
                 .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
@@ -576,7 +576,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(() => service.getEnvironmentData()).rejects
+            await expect(async () => await service.getEnvironmentData()).rejects
                 .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             // Assert
@@ -918,7 +918,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock));
 
             // Act + Assert
-            await expect(async () => await service.addKey("anyKey", "anyValue")).rejects
+            await expect(async () => { await service.addKey("anyKey", "anyValue"); }).rejects
                 .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
 
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -949,7 +949,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrow("Duplicate key found");
+            await expect(async () => { await service.addKey(keyName, keyValue); }).rejects.toThrow("Duplicate key found");
 
             verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -980,9 +980,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-            await expect(async () =>
-            
-            await service.addKey(keyName.toUpperCase(), keyValue)).rejects.toThrow("Duplicate key found");
+            await expect(async () => { await service.addKey(keyName.toUpperCase(), keyValue); }).rejects.toThrow("Duplicate key found");
 
             verify(providerMock.getValue(keyFullPath)).once();
             verify(providerMock.setValue(anyString(), anyString())).never();
@@ -1015,7 +1013,7 @@ describe("KevinService", () => {
             const service = new KevinService(instance(providerMock), environment);
 
             // Act + Assert
-            await expect(async () => await service.addKey(keyName, keyValue)).rejects.toThrowError("Duplicate key found");
+            await expect(async () => { await service.addKey(keyName, keyValue); }).rejects.toThrowError("Duplicate key found");
 
 
             // Assert
@@ -1027,4 +1025,97 @@ describe("KevinService", () => {
         });
 
     })
+
+    describe("delete key", () => {
+
+        const ENVIRONMENT_ID = "root/my-env";
+
+        const ENVIRONMENT: IEnvironmentInformation = {
+            name: "my-env",
+            id: "root/my-env",
+            parentEnvironment: {
+                id: ROOT_ENVIRONMENT_ID,
+                name: ROOT_ENVIRONMENT_NAME,
+                parentEnvironment: null
+            }
+        }
+
+        it("should delete a key", async () => {
+
+            // Arrange
+
+            const keyName = "key";
+
+            const keyFullPath = `kevin.${ENVIRONMENT_ID}.keys.${keyName}`;
+            when(providerMock.hasKey(keyFullPath)).thenResolve(true);
+
+            const service = new KevinService(instance(providerMock), ENVIRONMENT);
+
+            // Act
+            await service.deleteKey(keyName);
+
+            verify(providerMock.hasKey(keyFullPath)).once();
+            verify(providerMock.deleteKey(keyFullPath)).once();
+
+
+        })
+
+        it("should throw error if the key is not found", async () => {
+
+            // Arrange
+
+            const keyName = "key";
+
+            const keyFullPath = `kevin.${ENVIRONMENT_ID}.keys.${keyName}`;
+            when(providerMock.hasKey(keyFullPath)).thenResolve(false);
+
+            const service = new KevinService(instance(providerMock), ENVIRONMENT);
+
+            // Act + Assert
+            await expect(async () => { await service.deleteKey(keyName); }).rejects.toThrowError(`Could not find key ${keyName} under environment ${ENVIRONMENT_ID}`);
+
+
+            verify(providerMock.hasKey(keyFullPath)).once();
+            verify(providerMock.deleteKey(keyFullPath)).never();
+
+
+        })
+
+        it("should throw an error if attempting to delete from root environment.", async() => {
+
+
+            // Arrange
+            const rootEnvironment : IEnvironmentInformation = {
+                name: ROOT_ENVIRONMENT_NAME,
+                id: ROOT_ENVIRONMENT_ID,
+                parentEnvironment: null
+            }
+
+            const keyName = "key";
+
+            const service = new KevinService(instance(providerMock), rootEnvironment);
+
+            // Act + Assert
+            await expect(service.deleteKey(keyName)).rejects.toThrowError("Cannot delete keys from root environment");
+
+
+            verify(providerMock.hasKey(anyString())).never();
+            verify(providerMock.deleteKey(anyString())).never();
+
+        });
+
+        it("should handle no current environment is set.", async () => {
+            // Arrange
+
+            const service = new KevinService(instance(providerMock));
+
+            // Act + Assert
+            await expect(async () => { await service.deleteKey("anyKey"); }).rejects
+                .toThrow("Environment is not set. Please set the environment using the setCurrentEnvironment method");
+
+            verify(providerMock.hasKey(anyString())).never();
+            verify(providerMock.deleteKey(anyString())).never();
+        });
+
+    });
 });

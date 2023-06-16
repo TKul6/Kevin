@@ -3,16 +3,21 @@ import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
 import { DialogState } from '../../app/helpers/dialog-helpers';
 import { RootState } from '../../app/store';
 import { LoadingStatus } from '../../app/types';
-import { addNewKey, getEnvironmentKeys, setEnvironmentKey } from '../environments/environmentsApi';
+import { addNewKey, deleteKey, getEnvironmentKeys, getKey, setEnvironmentKey } from '../environments/environmentsApi';
 import { selectEnvironment } from '../environments/environmentsSlice';
 import { AddKeyModel } from './dialogs/addKeyDialog';
 
+/* #region state */
 export interface EnvironmentInfoState {
     environmentKeys: Array<IKevinValue>,
     status: LoadingStatus;
     selectedEnvironmentId: string | null,
     editedKevinValue: IKevinValue | null
     addKeyStatus: DialogState
+    inheritKeyStatus: DialogState,
+    keyToInherit: IKevinValue | null,
+    getParentKeyStatus: LoadingStatus
+    parentKey: IKevinValue | null
 
 }
 
@@ -21,9 +26,22 @@ const initialState: EnvironmentInfoState = {
     environmentKeys: [],
     selectedEnvironmentId: null,
     editedKevinValue: null,
-    addKeyStatus: "idle"
+    addKeyStatus: "idle",
+    inheritKeyStatus: "idle",
+    keyToInherit: null,
+    getParentKeyStatus: LoadingStatus.NotLoaded,
+    parentKey: null
 
 }
+
+export interface EditValueModel {
+    existingValue: IKevinValue,
+    environmentId: string
+    newValue: string
+}
+
+/* #endregion */
+
 
 
 export const loadEnvironmentKeys = createAsyncThunk<Array<IKevinValue>, string>('environmentInfo/loadEnvironmentKeys',
@@ -32,12 +50,7 @@ export const loadEnvironmentKeys = createAsyncThunk<Array<IKevinValue>, string>(
     }
 );
 
-export interface EditValueModel {
-    existingValue: IKevinValue,
-    environmentId: string
-    newValue: string
-}
-
+/* #region  Set Key Value */
 export const openSetKeyValueDialog = createAction<IKevinValue>('environmentInfo/openSetKeyValueDialog');
 
 export const closeSetValueDialog = createAction('environmentInfo/closeSetValueDialog');
@@ -49,6 +62,9 @@ export const setKeyValue = createAsyncThunk<IKevinValue, EditValueModel>('enviro
     }
 );
 
+/* #endregion */
+
+/* #region  Add Key */
 export const selectKeyValueForEdit = createAction<IKevinValue>('environmentInfo/selectKeyValueForEdit');
 
 export const openAddKeyDialog = createAction('environmentInfo/openAddKeyDialog');
@@ -58,6 +74,38 @@ export const addKey = createAsyncThunk<IKevinValue, AddKeyModel>('environmentInf
 });
 
 export const closeAddKeyDialog = createAction('environmentInfo/closeAddKeyDialog');
+
+/* #endregion */
+
+
+/* #region inheritKey */
+
+
+export interface GetKeyModel {
+    key: string;
+    environmentId: string;
+}
+
+export const openInheritKeyDialog = createAction<IKevinValue>('environmentInfo/openInheritKeyDialog');
+
+export const inheritKey = createAsyncThunk<void, IKevinValue>('environmentInfo/inheritKey', async (model: IKevinValue) => {
+    await deleteKey(model);
+
+});
+
+export const closeInheritKeyDialog = createAction('environmentInfo/closeInheritKeyDialog');
+
+export const getParentKey = createAsyncThunk<IKevinValue, GetKeyModel>('environmentInfo/getParentKey', async (model: GetKeyModel) => {
+
+    const parentKey = await getKey(model.key, model.environmentId);
+    return parentKey;
+
+});
+
+
+
+/* #endregion */
+
 
 export const environmentInfoSlice = createSlice({
     name: 'environmentInfo',
@@ -110,11 +158,42 @@ export const environmentInfoSlice = createSlice({
             })
             .addCase(addKey.rejected, (state, _) => {
                 state.addKeyStatus = "server-failed";
-            });
+            }).addCase(openInheritKeyDialog, (state, action) => {
+                state.inheritKeyStatus = "start";
+                state.keyToInherit = action.payload;
+            })
+            .addCase(inheritKey.pending, (state, _) => {
+                state.inheritKeyStatus = "server-in-progress"
+            }).addCase(closeInheritKeyDialog, (state, _) => {
+                state.inheritKeyStatus = "idle";
+                state.keyToInherit = null;
+            }).addCase(inheritKey.fulfilled, (state, action) => {
+                state.inheritKeyStatus = "idle";
+
+
+                const keyToReplace = state.parentKey.key;
+
+                state.environmentKeys = state.environmentKeys.map((
+                    key: IKevinValue) => key.key === keyToReplace ? state.parentKey : key);
+                state.getParentKeyStatus = LoadingStatus.NotLoaded;
+                state.parentKey = null;
+            }).addCase(inheritKey.rejected, (state, _) => {
+                state.inheritKeyStatus = "server-failed";
+            })
+            .addCase(getParentKey.pending, (state, _) => {
+                state.getParentKeyStatus = LoadingStatus.Loading;
+                state.parentKey = null;
+            }).addCase(getParentKey.fulfilled, (state, action) => {
+                state.getParentKeyStatus = LoadingStatus.Loaded;
+                state.parentKey = action.payload;
+            }).addCase(getParentKey.rejected, (state, _) => {
+                state.getParentKeyStatus = LoadingStatus.Failed;
+            })
     }
 });
 
 
+/* #region selectors */
 
 export const selectEnvironmentInfo = (state: RootState) => state.environmentInfo;
 
@@ -126,5 +205,11 @@ export const selectAddKeyStatus = (state: RootState) => state.environmentInfo.ad
 
 export const selectLoadingStatus = (state: RootState) => state.environmentInfo.status;
 
+export const selectKeyToInherit = (state: RootState) => state.environmentInfo.keyToInherit;
+
+export const selectParentKeyStatus = (state: RootState) => state.environmentInfo.getParentKeyStatus;
+export const selectParentKey = (state: RootState) => state.environmentInfo.parentKey;
+
+/* #endregion */
 
 export default environmentInfoSlice.reducer;

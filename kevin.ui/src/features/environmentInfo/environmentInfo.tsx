@@ -1,5 +1,5 @@
 
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {  useAppSelector } from '../../app/hooks';
 import styles from './environmentInfo.module.css';
 import Divider from '@mui/material/Divider';
 import Table from '@mui/material/Table';
@@ -9,11 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import { openAddKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
+import { openAddKeyDialog, openInheritKeyDialog, openSetKeyValueDialog, selectEnvironmentInfo, selectLoadingStatus} from './environmentInfoSlice';
 import { IKevinValue } from '@kevin-infra/core/interfaces';
-import Tooltip from '@mui/material/Tooltip';
 import { Header } from '../../app/components/header/header';
 import { AddKeyDialog } from './dialogs/addKeyDialog';
 import { SetKeyDialog } from './dialogs/setKeyDialog';
@@ -24,7 +22,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TablePaginationActions from '@mui/material/TablePagination/TablePaginationActions';
 import { ChangeEvent } from 'react';
 import React from 'react';
-
+import { IconCommand } from '../../app/components/icon-command/icon-command';
+import { InheritKeyDialog } from './dialogs/inheritKeyDialog';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 
 
@@ -36,7 +36,6 @@ export function EnvironmentInfo() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-const dispatch = useAppDispatch();
 
   function handleChangeRowsPerPage(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     setRowsPerPage(parseInt(event.target.value));
@@ -67,17 +66,28 @@ notLoadedMessage="Select an environment to revel it's keys">
               </TableRow>
             </TableHead>
             <TableBody>
-              {(rowsPerPage > 0 ?   environmentInfo.environmentKeys.slice(rowsPerPage * page,rowsPerPage * page + rowsPerPage): environmentInfo.environmentKeys.slice(0, rowsPerPage)).map((kvInfo: IKevinValue) => (
+              {(rowsPerPage > 0 ? environmentInfo.environmentKeys.slice(rowsPerPage * page,rowsPerPage * page + rowsPerPage): environmentInfo.environmentKeys.slice(0, rowsPerPage)).map((kvInfo: IKevinValue) => (
                 <TableRow key={kvInfo.key}>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.key}</TableCell>
                   <TableCell className={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? styles.inheritItem : ''}>{kvInfo.value}</TableCell>
                   <TableCell className={styles.actionsColumn} align="right">
 
-                    <Tooltip title={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? 'Stop inherit and set value' : 'Set value'} placement="top">
-                      <IconButton aria-label="set value" size='small' onClick={() => dispatch(openSetKeyValueDialog(kvInfo))}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                  <IconCommand tooltip={kvInfo.environmentInfo.id !== environmentInfo.selectedEnvironmentId ? 'Stop inherit and set value' : 'Set value'}
+                    tooltipPlacement="top"
+                    ariaLabel="set value"
+                    fontSize="small"
+                    action={openSetKeyValueDialog(kvInfo)}>
+                       <EditIcon fontSize="small" />
+                    </IconCommand>
+
+                  {environmentInfo.selectedEnvironmentId !== "root" &&  kvInfo.environmentInfo.id === environmentInfo.selectedEnvironmentId && (
+                  <IconCommand tooltip="Inherit value from parent environment"
+                    tooltipPlacement="top"
+                    ariaLabel="inherit value"
+                    fontSize="small"
+                    action={openInheritKeyDialog(kvInfo)}>
+                       <ArrowUpwardIcon fontSize="small" />
+                    </IconCommand>)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -106,6 +116,7 @@ notLoadedMessage="Select an environment to revel it's keys">
         </TableContainer>
         <SetKeyDialog />
       <AddKeyDialog />
+      <InheritKeyDialog />
         </Loader>
       </div>
       

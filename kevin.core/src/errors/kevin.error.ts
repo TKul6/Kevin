@@ -9,5 +9,7 @@ export enum KevinErrorType {
     DuplicateEnvironment,
     EnvironmentNotSet,
     InvalidEnvironmentInfo,
-    EnvironmentNotFound
+    EnvironmentNotFound,
+    InvalidOperation,
+    KeyNotFound
 }

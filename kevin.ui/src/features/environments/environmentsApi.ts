@@ -81,3 +81,27 @@ export async function addNewKey(addKeyModel: AddKeyModel): Promise<IKevinValue> 
   throw new Error("Failed to add key");
 
 }
+
+export async function deleteKey(key: IKevinValue): Promise<void> {
+
+
+  const response = await fetch(`/environments/${encodeURIComponent(key.environmentInfo.id)}/keys/${encodeURIComponent(key.key)}`, { method: 'DELETE' });
+
+  if (response.status === 204) {
+    return;
+  }
+
+  throw new Error("Failed to inherit key");
+
+}
+
+export async function getKey(key: string, environmentId: string): Promise<IKevinValue> {
+
+  const response = await fetch(`/environments/${encodeURIComponent(environmentId)}/keys/${encodeURIComponent(key)}`);
+
+  if (response.status === 200) {
+    return await response.json();
+  }
+
+  throw new Error("Failed to get key");
+}

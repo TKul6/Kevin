@@ -1,5 +1,5 @@
 import { type IEnvironmentMetaData, type IEnvironmentInformation, type IKevinManager, type IKevinValue, type IProvider } from '../interfaces'
-import { DuplicateKeyFoundError, EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError } from '../errors'
+import { DuplicateKeyFoundError, EnvironmentNotFoundError, EnvironmentNotSetError, InvalidEnvironmentInfoError, InvalidOperationError, KeyNotFoundError } from '../errors'
 import cloneDeep from "lodash.clonedeep"
 import { DuplicateEnvironmentFound } from '../errors/duplicate-environment-found.error';
 const ROOT_ENVIRONMENT_NAME = "root";
@@ -165,6 +165,22 @@ export class KevinService implements IKevinManager {
     }
 
     await Promise.all(promises)
+  }
+
+  public async deleteKey(key: string): Promise<void> {
+    this.verifyEnvironmentIsSet();
+
+    if (this.envInfo.id === ROOT_ENVIRONMENT_NAME) {
+      throw new InvalidOperationError("Cannot delete keys from root environment");
+    }
+
+    if (! await this.provider.hasKey(this.getFullKey(key))) {
+      throw new KeyNotFoundError(key, this.envInfo.id);
+
+    }
+
+    await this.provider.deleteKey(this.getFullKey(key));
+
   }
 
 

@@ -5,5 +5,6 @@ export interface IProvider {
     getKeys(keyPrefix: string): Promise<string[]>;
     hasKey(key: string): Promise<boolean>;
     getDelimiter(): string;
+    deleteKey(key: string): Promise<any>;
 
 }

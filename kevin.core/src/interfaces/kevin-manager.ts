@@ -10,7 +10,6 @@ export interface IKevinManager {
     createRootEnvironment(): Promise<IEnvironmentInformation>;
     createEnvironment(environmentName: string, parentEnvironmentId?: string): Promise<IEnvironmentMetaData>;
     addKey(key: string, value: string, defaultValue?): Promise<void>;
-
-
+    deleteKey(key: string): Promise<void>;
 
 }

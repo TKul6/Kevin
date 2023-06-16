@@ -6,6 +6,9 @@ import {
   Body,
   Post,
   HttpCode,
+  Delete,
+  ForbiddenError,
+  OnUndefined,
 } from 'routing-controllers';
 import {
   Inject,
@@ -15,8 +18,8 @@ import {
   type IKevinManager,
   type IKevinValue,
 } from '@kevin-infra/core/interfaces';
-import { ValueModel } from '../models/value.model';
-import { KeyValueModel } from '../models/key-value.model';
+import { type ValueModel } from '../models/value.model';
+import { type KeyValueModel } from '../models/key-value.model';
 
 @JsonController(
   '/environments/:id/keys'
@@ -26,7 +29,7 @@ export class EnvironmentKeysController {
   constructor(
     @Inject('kevin.service')
     private readonly kevinService: IKevinManager
-  ) {}
+  ) { }
 
   @Get()
   public async getAllKeys(
@@ -67,9 +70,7 @@ export class EnvironmentKeysController {
     @Body() valueModel: ValueModel
   ): Promise<IKevinValue> {
     const envInfo =
-      await this.kevinService.setCurrentEnvironment(
-        environmentId
-      );
+      await this.kevinService.setCurrentEnvironment(environmentId);
 
     await this.kevinService.setValue(
       key,
@@ -83,4 +84,35 @@ export class EnvironmentKeysController {
     };
     return result;
   }
+
+  @Get('/:key')
+  @OnUndefined(404)
+  public async getKey(
+    @Param('id') environmentId: string, @Param('key') key: string): Promise<IKevinValue> {
+
+    await this.kevinService.setCurrentEnvironment(environmentId);
+
+    const value = await this.kevinService.getValue(key);
+
+    // Todo handle null
+
+
+    return value;
+  }
+
+
+  @Delete('/:key')
+  public async deleteKey(@Param('id') environmentId: string,
+    @Param('key') key: string): Promise<void> {
+
+    if (environmentId === "root") {
+      throw new ForbiddenError("Deleting keys from root environment is not allowed");
+    }
+
+    await this.kevinService.setCurrentEnvironment(environmentId);
+    await this.kevinService.deleteKey(key);
+    return null;
+
+  }
+
 }

@@ -1,7 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { selectEnvironment } from '../environments/environmentsSlice';
 import { openToast } from '../system/systemSlice';
-import { addKey, closeAddKeyDialog, loadEnvironmentKeys, setKeyValue } from './environmentInfoSlice';
+import { addKey, closeAddKeyDialog, closeInheritKeyDialog, getParentKey, inheritKey, loadEnvironmentKeys, openInheritKeyDialog, setKeyValue } from './environmentInfoSlice';
 
 export const keysLoaderMiddleware = createListenerMiddleware();
 
@@ -57,3 +57,40 @@ SetValueFailedMiddleware.startListening({
     }
 });
 
+
+export const inheritKeyMiddleware = createListenerMiddleware();
+
+inheritKeyMiddleware.startListening({
+    actionCreator: inheritKey.fulfilled,
+    effect: (action, listenerApi) => {
+        const message = `Key '${action.meta.arg.key}' is now inherits from '${action.meta.arg.environmentInfo.parentEnvironment.name}'.`;
+        listenerApi.dispatch(openToast({ text: message, level: 'success' }));
+        listenerApi.dispatch(closeInheritKeyDialog());
+    }
+});
+
+
+inheritKeyMiddleware.startListening({
+    actionCreator: inheritKey.rejected,
+    effect: (action, listenerApi) => {
+        const message = action.error.message;
+        listenerApi.dispatch(openToast({ text: message, level: 'error' }));
+    }
+});
+
+inheritKeyMiddleware.startListening({
+    actionCreator: openInheritKeyDialog,
+    effect: (action, listenerApi) => {
+        listenerApi.dispatch(getParentKey({ key: action.payload.key, environmentId: action.payload.environmentInfo.parentEnvironment.id }));
+    }
+});
+
+inheritKeyMiddleware.startListening({
+    actionCreator: getParentKey.rejected,
+    effect: (action, listenerApi) => {
+        const key = action.meta.arg.key;
+        const environmentId = action.meta.arg.environmentId;
+        const message = `Failed to get parent key for key '${key}' in environment '${environmentId}'.`;
+        listenerApi.dispatch(openToast({ text: message, level: 'error' }));
+    }
+});
