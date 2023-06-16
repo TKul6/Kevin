@@ -8,6 +8,7 @@ import {
   HttpCode,
   Delete,
   ForbiddenError,
+  OnUndefined,
 } from 'routing-controllers';
 import {
   Inject,
@@ -19,6 +20,7 @@ import {
 } from '@kevin-infra/core/interfaces';
 import { type ValueModel } from '../models/value.model';
 import { type KeyValueModel } from '../models/key-value.model';
+import { response } from 'express';
 
 @JsonController(
   '/environments/:id/keys'
@@ -69,9 +71,7 @@ export class EnvironmentKeysController {
     @Body() valueModel: ValueModel
   ): Promise<IKevinValue> {
     const envInfo =
-      await this.kevinService.setCurrentEnvironment(
-        environmentId
-      );
+      await this.kevinService.setCurrentEnvironment(environmentId);
 
     await this.kevinService.setValue(
       key,
@@ -85,6 +85,22 @@ export class EnvironmentKeysController {
     };
     return result;
   }
+
+  @Get('/:key')
+  @OnUndefined(404)
+  public async getKey(
+    @Param('id') environmentId: string, @Param('key') key: string): Promise<IKevinValue> {
+
+    await this.kevinService.setCurrentEnvironment(environmentId);
+
+    const value = await this.kevinService.getValue(key);
+
+    // Todo handle null
+
+
+    return value;
+  }
+
 
   @Delete('/:key')
   public async deleteKey(@Param('id') environmentId: string,
