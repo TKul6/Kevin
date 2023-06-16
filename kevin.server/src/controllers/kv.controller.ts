@@ -20,7 +20,6 @@ import {
 } from '@kevin-infra/core/interfaces';
 import { type ValueModel } from '../models/value.model';
 import { type KeyValueModel } from '../models/key-value.model';
-import { response } from 'express';
 
 @JsonController(
   '/environments/:id/keys'
