@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContentText, DialogTitle, TextFiel
 import { isModalVisible } from "../../../app/helpers/dialog-helpers";
 import { getEnvironment } from "../../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectEnvironments } from "../../environments/environmentsSlice";
+import { selectEnvironments } from "../../environments/state";
 import { closeAddKeyDialog, selectAddKeyStatus, selectSelectedEnvironmentId, addKey as addKeyAction, selectEnvironmentInfo } from "../state";
 import styles from "./dialog.module.css"
 import InfoIcon from '@mui/icons-material/Info';

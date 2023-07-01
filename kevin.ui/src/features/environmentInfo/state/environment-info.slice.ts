@@ -2,7 +2,7 @@ import { IKevinValue } from '@kevin-infra/core/interfaces';
 import { createSlice, } from '@reduxjs/toolkit';
 import { DialogState } from '../../../app/helpers/dialog-helpers';
 import { LoadingStatus } from '../../../app/types';
-import { selectEnvironment } from '../../environments/environmentsSlice';
+import { selectEnvironment } from '../../environments/state';
 import * as actions from './environment-info.actions';
 
 /* #region state */

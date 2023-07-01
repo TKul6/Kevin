@@ -1,12 +1,12 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { closeCreateEnvironmentDialog, createEnvironment } from './environmentsSlice';
-import { openToast } from '../system/systemSlice';
+import * as actions  from './environments.actions';
+import { openToast } from '../../system/systemSlice';
 
 
 export const createEnvironmentFailed = createListenerMiddleware();
 
 createEnvironmentFailed.startListening({
-    actionCreator: createEnvironment.rejected,
+    actionCreator: actions.createEnvironment.rejected,
     effect: (action, listenerApi) => {
         listenerApi.dispatch(openToast({ text: action.error.message, level: 'error' }));
     }
@@ -16,10 +16,10 @@ createEnvironmentFailed.startListening({
 export const createEnvironmentSucceeded = createListenerMiddleware();
 
 createEnvironmentSucceeded.startListening({
-    actionCreator: createEnvironment.fulfilled,
+    actionCreator: actions.createEnvironment.fulfilled,
     effect: (action, listenerApi) => {
         listenerApi.dispatch(openToast({ text: `Environment '${action.meta.arg.name}' was created successfully.`, level: 'success' }));
-        listenerApi.dispatch(closeCreateEnvironmentDialog());
+        listenerApi.dispatch(actions.closeCreateEnvironmentDialog());
     }
 
 });

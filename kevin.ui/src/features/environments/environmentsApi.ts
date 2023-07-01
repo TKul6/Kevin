@@ -1,6 +1,7 @@
 import { IEnvironmentMetaData, IKevinValue } from "@kevin-infra/core/interfaces";
 import { AddKeyModel } from "../environmentInfo/dialogs/addKeyDialog";
-import { createEnvironmentModel } from "./environmentsSlice";
+import { createEnvironmentModel } from "./state";
+
 
 export async function getEnvironments(): Promise<Array<IEnvironmentMetaData>> {
 

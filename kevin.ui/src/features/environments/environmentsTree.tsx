@@ -7,7 +7,6 @@ import TreeItem from '@mui/lab/TreeItem';
 import styles from './environmentsTree.module.css';
 import { IEnvironmentMetaData } from '@kevin-infra/core/interfaces';
 import Divider from '@mui/material/Divider';
-import { openCreateEnvironmentDialog, selectEnvironment } from './environmentsSlice';
 import AddIcon from '@mui/icons-material/Add';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import Tooltip from '@mui/material/Tooltip';
@@ -16,6 +15,7 @@ import { CreateEnvironmentDialog } from './dialogs/createEnvironmentDialog';
 import { Header } from '../../app/components/header/header';
 import { openToast } from '../system/systemSlice';
 import { Loader } from '../../app/components/loader/loader';
+import { openCreateEnvironmentDialog, selectEnvironment } from './state/environments.actions';
 
 
 

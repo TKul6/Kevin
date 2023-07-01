@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { selectEnvironment } from '../../environments/environmentsSlice';
+import { selectEnvironment } from '../../environments/state';
 import { openToast } from '../../system/systemSlice';
 import * as actions from './environment-info.actions'
 

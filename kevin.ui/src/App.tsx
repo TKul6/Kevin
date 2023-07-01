@@ -4,7 +4,7 @@ import Divider from '@mui/material/Divider';
 import  './App.css';
 import { EnvironmentsTree } from './features/environments/environmentsTree';
 import { useAppDispatch } from './app/hooks';
-import { loadEnvironments } from  './features/environments/environmentsSlice';
+import { loadEnvironments } from  './features/environments/state';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
