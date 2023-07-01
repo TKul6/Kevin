@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { addKeyFailedMiddleware, addKeySuccessMiddleware, inheritKeyMiddleware, keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddleware } from '../features/environmentInfo/environmentInfoMiddlewares';
-import environmentInfoSlice from '../features/environmentInfo/environmentInfoSlice';
+import { addKeyFailedMiddleware, addKeySuccessMiddleware, inheritKeyMiddleware, keysLoaderMiddleware, SetValueFailedMiddleware, SetValueSuccessMiddleware } from '../features/environmentInfo/state/environment-info.middlewares';
+import environmentInfoSlice from '../features/environmentInfo/state/environment-info.slice';
 import systemSlice from '../features/system/systemSlice';
-import environmentsReducer from '../features/environments/environmentsSlice';
-import { createEnvironmentFailed, createEnvironmentSucceeded } from '../features/environments/environmentsMiddlewares';
+import environmentsReducer from '../features/environments/state/environments.slice';
+import { createEnvironmentFailed, createEnvironmentSucceeded } from '../features/environments/state/environments.middlewares';
 
 export const store = configureStore({
   reducer: {

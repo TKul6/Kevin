@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContentText, DialogTitle, TextFiel
 import React from "react";
 import { getEnvironment } from "../../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { closeCreateEnvironmentDialog, selectCreateEnvironmentModel, selectEnvironments, createEnvironment as createEnvironmentAction } from "../environmentsSlice";
+import { closeCreateEnvironmentDialog, selectCreateEnvironmentModel, selectEnvironments, createEnvironment as createEnvironmentAction } from "../state";
 
 export function CreateEnvironmentDialog() {
 

@@ -2,8 +2,8 @@ import { Button,  Dialog, DialogActions, DialogContent, DialogContentText, Dialo
 import React from "react";
 import { getEnvironment } from "../../../app/helpers/environment-helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectEnvironments } from "../../environments/environmentsSlice";
-import { closeSetValueDialog, selectEditedKevinValue, selectSelectedEnvironmentId, setKeyValue } from "../environmentInfoSlice";
+import { selectEnvironments } from "../../environments/state";
+import { closeSetValueDialog, selectEditedKevinValue, selectSelectedEnvironmentId, setKeyValue } from "../state";
 import styles from './dialog.module.css'
 export function SetKeyDialog() {
 

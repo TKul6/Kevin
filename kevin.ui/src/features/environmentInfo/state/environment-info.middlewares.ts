@@ -1,14 +1,15 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { selectEnvironment } from '../environments/environmentsSlice';
-import { openToast } from '../system/systemSlice';
-import { addKey, closeAddKeyDialog, closeInheritKeyDialog, getParentKey, inheritKey, loadEnvironmentKeys, openInheritKeyDialog, setKeyValue } from './environmentInfoSlice';
+import { selectEnvironment } from '../../environments/state';
+import { openToast } from '../../system/systemSlice';
+import * as actions from './environment-info.actions'
+
 
 export const keysLoaderMiddleware = createListenerMiddleware();
 
 keysLoaderMiddleware.startListening({
     actionCreator: selectEnvironment,
     effect: (action, listenerApi) => {
-        listenerApi.dispatch(loadEnvironmentKeys(action.payload));
+        listenerApi.dispatch(actions.loadEnvironmentKeys(action.payload));
     }
 
 });
@@ -16,7 +17,7 @@ keysLoaderMiddleware.startListening({
 export const SetValueSuccessMiddleware = createListenerMiddleware();
 
 SetValueSuccessMiddleware.startListening({
-    actionCreator: setKeyValue.fulfilled,
+    actionCreator: actions.setKeyValue.fulfilled,
     effect: (action, listenerApi) => {
         const message = `Value for key '${action.payload.key}' was successfully updated to '${action.payload.value}'`;
         listenerApi.dispatch(openToast({ text: message, level: 'success' }));
@@ -27,7 +28,7 @@ SetValueSuccessMiddleware.startListening({
 export const SetValueFailedMiddleware = createListenerMiddleware()
 
 SetValueFailedMiddleware.startListening({
-    actionCreator: setKeyValue.rejected,
+    actionCreator: actions.setKeyValue.rejected,
     effect: (action, listenerApi) => {
         const message = `Failed to set key '${action.meta.arg.existingValue.key}'`;
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
@@ -38,11 +39,11 @@ SetValueFailedMiddleware.startListening({
 export const addKeySuccessMiddleware = createListenerMiddleware();
 
 SetValueSuccessMiddleware.startListening({
-    actionCreator: addKey.fulfilled,
+    actionCreator: actions.addKey.fulfilled,
     effect: (action, listenerApi) => {
         const message = `Key '${action.payload.key}' was added successfully.`;
         listenerApi.dispatch(openToast({ text: message, level: 'success' }));
-        listenerApi.dispatch(closeAddKeyDialog());
+        listenerApi.dispatch(actions.closeAddKeyDialog());
     }
 });
 
@@ -50,7 +51,7 @@ SetValueSuccessMiddleware.startListening({
 export const addKeyFailedMiddleware = createListenerMiddleware()
 
 SetValueFailedMiddleware.startListening({
-    actionCreator: addKey.rejected,
+    actionCreator: actions.addKey.rejected,
     effect: (action, listenerApi) => {
         const message = action.error.message;
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
@@ -61,17 +62,17 @@ SetValueFailedMiddleware.startListening({
 export const inheritKeyMiddleware = createListenerMiddleware();
 
 inheritKeyMiddleware.startListening({
-    actionCreator: inheritKey.fulfilled,
+    actionCreator: actions.inheritKey.fulfilled,
     effect: (action, listenerApi) => {
         const message = `Key '${action.meta.arg.key}' is now inherits from '${action.meta.arg.environmentInfo.parentEnvironment.name}'.`;
         listenerApi.dispatch(openToast({ text: message, level: 'success' }));
-        listenerApi.dispatch(closeInheritKeyDialog());
+        listenerApi.dispatch(actions.closeInheritKeyDialog());
     }
 });
 
 
 inheritKeyMiddleware.startListening({
-    actionCreator: inheritKey.rejected,
+    actionCreator: actions.inheritKey.rejected,
     effect: (action, listenerApi) => {
         const message = action.error.message;
         listenerApi.dispatch(openToast({ text: message, level: 'error' }));
@@ -79,14 +80,14 @@ inheritKeyMiddleware.startListening({
 });
 
 inheritKeyMiddleware.startListening({
-    actionCreator: openInheritKeyDialog,
+    actionCreator: actions.openInheritKeyDialog,
     effect: (action, listenerApi) => {
-        listenerApi.dispatch(getParentKey({ key: action.payload.key, environmentId: action.payload.environmentInfo.parentEnvironment.id }));
+        listenerApi.dispatch(actions.getParentKey({ key: action.payload.key, environmentId: action.payload.environmentInfo.parentEnvironment.id }));
     }
 });
 
 inheritKeyMiddleware.startListening({
-    actionCreator: getParentKey.rejected,
+    actionCreator: actions.getParentKey.rejected,
     effect: (action, listenerApi) => {
         const key = action.meta.arg.key;
         const environmentId = action.meta.arg.environmentId;
