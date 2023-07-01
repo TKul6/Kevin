@@ -1,5 +1,4 @@
 import {  createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../../app/store';
 import { IEnvironmentMetaData } from "@kevin-infra/core/interfaces"
 import { LoadingStatus } from '../../../app/types';
 import { createEnvironmentModel } from './models/create-environment.model';
