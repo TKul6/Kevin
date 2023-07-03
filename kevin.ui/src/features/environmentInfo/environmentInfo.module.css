@@ -12,7 +12,7 @@
 
 .actionsColumn {
     width: 100px;
-   }
+}
 
 td.actionsColumn {
     opacity: 0;
@@ -29,3 +29,11 @@ tr:hover td.actionsColumn {
     padding-right: 10px;
 }
 
+.flexContainer {
+    display: flex;
+    flex: 1;
+}
+
+.headerCommand {
+    padding-left: 16px;
+}
