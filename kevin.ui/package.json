@@ -58,5 +58,8 @@
   "workspaces": [
     "../kevin.core"
   ],
-  "proxy": "http://localhost:3000"
+  "proxy": "http://localhost:3000",
+  "devDependencies": {
+    "ts-jest": "^29.0.5"
+  }
 }

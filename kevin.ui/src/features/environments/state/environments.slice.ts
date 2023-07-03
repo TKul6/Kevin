@@ -13,7 +13,7 @@ export interface EnvironmentsState {
   createEnvironmentModel: createEnvironmentModel;
 }
 
-const initialState: EnvironmentsState = {
+export const initialState: EnvironmentsState = {
   environments: [],
   status: LoadingStatus.NotLoaded,
   selectedEnvironment: null,
