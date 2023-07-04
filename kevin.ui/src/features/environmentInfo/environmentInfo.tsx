@@ -26,7 +26,6 @@ import { InheritKeyDialog } from './dialogs/inheritKeyDialog';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import TextField from '@mui/material/TextField';
 import { Button, FormControlLabel, Switch, Tooltip } from '@mui/material';
-import { StaticDatePicker } from '@mui/lab';
 
 export function EnvironmentInfo() {
 
@@ -68,10 +67,10 @@ const dispatch = useAppDispatch();
       >
         <div className={styles.flexContainer}>
           <Tooltip title="Create new key">
-            <Button variant="contained" onClick={() => dispatch(openAddKeyDialog())} disabled={status != LoadingStatus.Loaded}>Create</Button>
+            <Button variant="contained" onClick={() => dispatch(openAddKeyDialog())} disabled={status !== LoadingStatus.Loaded}>Create</Button>
         </Tooltip>
         <FormControlLabel control={<Switch  checked={showAll} onChange={(e) => setShowAll(e.target.checked)}  />} 
-        disabled={status != LoadingStatus.Loaded || environmentInfo.selectedEnvironmentId === 'root'}
+        disabled={status !== LoadingStatus.Loaded || environmentInfo.selectedEnvironmentId === 'root'}
         label="Show all value" className={styles.headerCommand}/>
 
         </div>
