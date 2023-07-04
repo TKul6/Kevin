@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import styles from './environmentInfo.module.css';
 import Divider from '@mui/material/Divider';
 import Table from '@mui/material/Table';
@@ -25,10 +25,15 @@ import { IconCommand } from '../../app/components/icon-command/icon-command';
 import { InheritKeyDialog } from './dialogs/inheritKeyDialog';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import TextField from '@mui/material/TextField';
+import { Button, FormControlLabel, Switch, Tooltip } from '@mui/material';
 
 export function EnvironmentInfo() {
+
+const dispatch = useAppDispatch();
+
   const environmentInfo = useAppSelector(selectEnvironmentInfo);
   const status = useAppSelector(selectLoadingStatus);
+  const [showAll, setShowAll] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(14);
   const [keyFilterValue, setKeyFilterValue] = React.useState('');
@@ -44,24 +49,32 @@ export function EnvironmentInfo() {
   }
 
   function getFilteredKeys() {
-    return environmentInfo.environmentKeys
+    const keys =  environmentInfo.environmentKeys
       .filter((kv: IKevinValue) => keyFilterValue === '' || kv.key.includes(keyFilterValue))
       .filter((kv: IKevinValue) => valueFilterValue === '' || kv.value.includes(valueFilterValue));
+
+      if(showAll) {
+        return keys;
+      } else {
+        return keys.filter((kv: IKevinValue) => kv.environmentInfo.id === environmentInfo.selectedEnvironmentId);
+      }
   }
 
   return (
     <div className={styles.contentContainer}>
       <Header
         title="Environment Info"
-        commands={[
-          {
-            name: 'Create',
-            tooltip: 'Create new key',
-            action: openAddKeyDialog(),
-            hidden: status !== LoadingStatus.Loaded,
-          },
-        ]}
-      />
+      >
+        <div className={styles.flexContainer}>
+          <Tooltip title="Create new key">
+            <Button variant="contained" onClick={() => dispatch(openAddKeyDialog())} disabled={status !== LoadingStatus.Loaded}>Create</Button>
+        </Tooltip>
+        <FormControlLabel control={<Switch  checked={showAll} onChange={(e) => setShowAll(e.target.checked)}  />} 
+        disabled={status !== LoadingStatus.Loaded || environmentInfo.selectedEnvironmentId === 'root'}
+        label="Show all value" className={styles.headerCommand}/>
+
+        </div>
+        </Header>
       <Divider></Divider>
       <div className={styles.item}>
         <Loader
