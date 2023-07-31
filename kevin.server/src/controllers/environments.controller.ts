@@ -1,20 +1,6 @@
-import {
-  type IEnvironmentInformation,
-  type IEnvironmentMetaData,
-  type IKevinManager,
-} from '@kevin-infra/core/interfaces';
-import {
-  Param,
-  Body,
-  Get,
-  Post,
-  JsonController,
-  HttpCode,
-} from 'routing-controllers';
-import {
-  Service,
-  Inject,
-} from 'typedi';
+import { type IEnvironmentInformation, type IEnvironmentMetaData, type IKevinManager } from '@kevin-infra/core/interfaces';
+import { Param, Body, Get, Post, JsonController, HttpCode } from 'routing-controllers';
+import { Service, Inject } from 'typedi';
 import { CreateEnvironmentModel } from '../models/create-environment.model';
 @JsonController('/environments')
 @Service()
@@ -25,9 +11,7 @@ export class EnvironmentsController {
   ) {}
 
   @Get()
-  public async getEnvironments(): Promise<
-    IEnvironmentMetaData[]
-  > {
+  public async getEnvironments(): Promise<IEnvironmentMetaData[]> {
     return await this.kevinService.getEnvironments();
   }
 
@@ -43,9 +27,6 @@ export class EnvironmentsController {
     data: CreateEnvironmentModel,
     @Param('id') id: string
   ): Promise<IEnvironmentMetaData> {
-    return await this.kevinService.createEnvironment(
-      data.environmentName,
-      id
-    );
+    return await this.kevinService.createEnvironment(data.environmentName, id);
   }
 }
