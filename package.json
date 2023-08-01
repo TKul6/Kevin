@@ -6,9 +6,12 @@
     "build:server": "npm run build --prefix kevin.server",
     "build:client": "npm run build --prefix kevin.ui",
     "build:solution": "npm run build:server && npm run build:client",
-    "install:server": "npm run build:allDependencies --prefix kevin.server && npm ci --prefix kevin.server",
+    "install:server": "npm ci --prefix kevin.server",
     "install:client": "npm ci --prefix kevin.ui",
-    "install:solution": "npm run install:server && npm run install:client",
+    "install:core": "npm ci --prefix kevin.core",
+    "install:redis": "npm ci --prefix kevin.redis",
+    "install:aws": "npm ci --prefix kevin.aws",
+    "install:solution": "npm run install:core && npm run install:redis && npm run install:server && npm run install:client",
     "ui:copy-dist": "cp -R ./kevin.ui/build/ ./kevin.server/dist/public"
   },
   "repository": {

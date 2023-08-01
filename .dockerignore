@@ -1,0 +1,19 @@
+# Exclude development and system files
+node_modules
+npm-debug.log
+yarn-error.log
+.dockerignore
+Dockerfile
+
+# Exclude build artifacts and temporary files
+dist
+build
+*.tmp
+*.log
+*.swp
+*.swo
+*.pid
+
+# Exclude version control files
+.git
+.gitignore
