@@ -21,7 +21,7 @@ RUN npm run install:redis
 RUN npm run install:server 
 RUN npm run install:client
 
-RUN npm link kevin.core kevin.redis 
+RUN npm link @kevin-infra/core @kevin-infra/redis 
 # Build solution
 
 COPY kevin.core/ ./kevin.core
