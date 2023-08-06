@@ -1,7 +1,13 @@
 name: Kevin Publish Redis Provider docker
 
 on:
-  pull_request:
+  push:
+    branches: [ main ]
+    paths:
+      - kevin.core/**
+      - kevin.redis/**
+      - kevin.server/**
+      - kevin.client/**
  
 jobs:
   build:
