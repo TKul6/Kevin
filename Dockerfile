@@ -16,7 +16,12 @@ COPY kevin.redis/package-lock.json ./kevin.redis/package-lock.json
 COPY kevin.server/package-lock.json ./kevin.server/package-lock.json
 COPY kevin.ui/package-lock.json ./kevin.ui/package-lock.json
 
+RUN npm run install:core 
+RUN npm run install:redis 
+RUN npm run install:server 
+RUN npm run install:client
 
+RUN npm link kevin.core kevin.redis 
 # Build solution
 
 COPY kevin.core/ ./kevin.core
@@ -24,14 +29,13 @@ COPY kevin.redis ./kevin.redis
 COPY kevin.server ./kevin.server
 COPY kevin.ui ./kevin.ui
 
-# RUN npm run build:solution
+RUN npm run build:core
+RUN npm run build:redis
 
-RUN npm run install:core 
-RUN npm run install:redis 
-RUN npm run install:server 
-RUN npm run install:client
+RUN npm run build:server 
+RUN npm run build:client
 
- RUN npm run ui:copy-dist
+RUN npm run ui:copy-dist
 
 # Release Minify
 

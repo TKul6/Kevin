@@ -1,4 +1,4 @@
-name: Kevin PR
+name: Kevin Publish Redis Provider docker
 
 on:
   pull_request:
