@@ -27,3 +27,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-redis-provider:latest
+          labels: version=$MAJOR_VERSION.${{ github.run_number }}-alpha
