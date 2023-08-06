@@ -24,9 +24,14 @@ COPY kevin.redis ./kevin.redis
 COPY kevin.server ./kevin.server
 COPY kevin.ui ./kevin.ui
 
-RUN npm run build:solution
+# RUN npm run build:solution
 
-RUN npm run ui:copy-dist
+RUN npm run install:core 
+RUN npm run install:redis 
+RUN npm run install:server 
+RUN npm run install:client
+
+ RUN npm run ui:copy-dist
 
 # Release Minify
 
