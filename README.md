@@ -130,6 +130,44 @@ The `default-value` is an *optional* default value that can be passed in order t
 
 If no value was provided, the key in the root environment will be set with an empty string.
 
+# How to spin up Kevin website on docker
+
+Instead of taking the source code of the server and client and publish the website on your own, you can use the up to date docker image to do so.
+
+How do you do that?
+### Steps
+- Create a new Dockerfile.
+- Copy & Paste the following template:
+```docker
+FROM tkul6/kevin-redis-provider:latest
+
+ENV PROVIDER_TYPE '<PROVIDER_TYPE>'
+
+EXPOSE 3000
+CMD ["node", "kevin.server/dist/index.js"]
+```
+- Select the desired provider type (supported providers are listed below).
+- Add additional `ENV` params specific to the provider you selected.
+- Create the image and use it!
+
+### Supported Providers:
+| Provider      | Env value | Additional Parameters     |
+| :---          |    :----: |          ---: |
+| Redis         | `provider.type.redis`       |  `REDIS_PROVIDER_URL` - The url to the reids server (ENV param  |
+
+### Example
+For Kevin server with Redis provider initialized that points to `redis://my-reids-server:6389` The docker file should look like this:
+
+```docker
+FROM tkul6/kevin-redis-provider:latest
+
+ENV PROVIDER_TYPE 'provider.type.redis'
+ENV REDIS_PROVIDER_URL 'redis://my-reids-server:6389'
+
+EXPOSE 3000
+CMD ["node", "kevin.server/dist/index.js"]
+```
 ## More Information
 - Providers.
 - Kevin Website.
+
