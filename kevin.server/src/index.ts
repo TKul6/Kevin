@@ -9,20 +9,22 @@ import * as express from 'express';
 import { resolve } from 'path';
 import { ProviderGenerator } from './provider-factories/provider-generator';
 
-const providerGenerator = new ProviderGenerator();
+(async () => {
+  const providerGenerator = new ProviderGenerator();
 
-const provider = providerGenerator.generate(process.env.PROVIDER_TYPE);
+  const provider = await providerGenerator.generate(process.env.PROVIDER_TYPE);
 
-Container.set('kevin.service', new KevinService(provider));
-useContainer(Container);
+  Container.set('kevin.service', new KevinService(provider));
+  useContainer(Container);
 
-const app = createExpressServer({
-  controllers: [EnvironmentKeysController, EnvironmentsController],
-  middlewares: [KevinErrorHandlerMiddleware],
-  defaultErrorHandler: false,
-});
+  const app = createExpressServer({
+    controllers: [EnvironmentKeysController, EnvironmentsController],
+    middlewares: [KevinErrorHandlerMiddleware],
+    defaultErrorHandler: false,
+  });
 
-app.use(express.static(resolve(__dirname, 'public')));
+  app.use(express.static(resolve(__dirname, 'public')));
 
-app.listen(3000);
-console.log('App is running on port 3000');
+  app.listen(3000);
+  console.log('App is running on port 3000');
+})().then(() => {}).catch((err) => {console.log(err)});
