@@ -9,7 +9,7 @@ import * as express from 'express';
 import { resolve } from 'path';
 import { ProviderGenerator } from './provider-factories/provider-generator';
 
-async function bootstrap(): Promise<void> {
+(async () => {
   const providerGenerator = new ProviderGenerator();
 
   const provider = await providerGenerator.generate(process.env.PROVIDER_TYPE);
@@ -27,6 +27,4 @@ async function bootstrap(): Promise<void> {
 
   app.listen(3000);
   console.log('App is running on port 3000');
-}
-
-bootstrap();
+})().then(() => {}).catch((err) => {console.log(err)});
