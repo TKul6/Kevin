@@ -10,7 +10,7 @@ export class ProviderGenerator {
     Container.set('provider.type.redis', new RedisProviderFactory());
   }
 
-  generate(providerType: string): IProvider {
+  generate(providerType: string): Promise<IProvider> {
     if (!SUPPORTED_PROVIDERS_TYPES.includes(providerType)) {
       throw new Error(`Unsupported provider type: ${providerType}`);
     }
