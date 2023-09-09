@@ -2,6 +2,9 @@ import { Service } from 'typedi';
 import { type ProviderFactory } from './factory';
 import { type IProvider } from '@kevin-infra/core/interfaces';
 
+const KEVIN_REDIS_IMPORT = '@kevin-infra/redis';
+const IOREDIS_IMPORT = 'ioredis';
+
 @Service('provider.redis.factory')
 export class RedisProviderFactory implements ProviderFactory {
   async create(): Promise<IProvider> {
@@ -12,8 +15,8 @@ export class RedisProviderFactory implements ProviderFactory {
       throw new Error('Redis URL not found');
     }
 
-    const { RedisProvider } = await import('@kevin-infra/redis');
+    const { RedisProvider } = await import(KEVIN_REDIS_IMPORT);
     const { default: Redis } = await import('ioredis');
-    return new RedisProvider(new Redis(redisUrl));
+    return new RedisProvider(new Redis(IOREDIS_IMPORT));
   }
 }

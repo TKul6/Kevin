@@ -7,6 +7,7 @@
     "build:client": "npm run build --prefix kevin.ui",
     "build:core": "npm run build --prefix kevin.core",
     "build:redis": "npm run build --prefix kevin.redis",
+    "build:aws": "npm run build --prefix kevin.aws",
     "build:solution": "npm run build:core && npm run build:server && npm run build:client",
     "install:server": "npm ci --prefix kevin.server",
     "install:client": "npm ci --prefix kevin.ui",
