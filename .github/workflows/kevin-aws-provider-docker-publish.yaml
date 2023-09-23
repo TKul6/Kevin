@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: ./aws.Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:${MAJOR_VERSION}.${{ github.run_number }}-alpha
-          labels: version=${MAJOR_VERSION}.${{ github.run_number }}-alpha
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:1.0.${{ github.run_number }}-alpha
+          labels: version=1.0.${{ github.run_number }}-alpha
