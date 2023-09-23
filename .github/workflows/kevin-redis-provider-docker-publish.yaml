@@ -29,5 +29,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-redis-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-reids-provider:${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-redis-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-redis-provider:${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
           labels: version=${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
