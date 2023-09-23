@@ -4,8 +4,7 @@ on:
     branches: [ main ]
     paths:
       - kevin.redis/**
-env:
-  MAJOR_VERSION: "1.0"
+
 jobs:
   publish-redis-provider:
     runs-on: ubuntu-latest
@@ -25,7 +24,7 @@ jobs:
       - run: npm run build --if-present
         working-directory: ./kevin.redis
         name: Build Redis Provider
-      - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
+      - run: npm version ${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
         name: Bump Redis provider package's version.
         working-directory: ./kevin.redis    
       - run: npm publish --access=public

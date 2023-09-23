@@ -4,8 +4,7 @@ on:
     branches: [ main ]
     paths:
       - kevin.core/**
-env:
-  MAJOR_VERSION: "1.0"
+      - .github/workflows/kevin-publish.yaml
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,7 +21,7 @@ jobs:
       - run: npm run build 
         name: Build Kevin Core
         working-directory: ./kevin.core
-      - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
+      - run: npm version ${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
         name: Bump Kevin Core package's version.
         working-directory: ./kevin.core    
       - run: npm publish --access=public
