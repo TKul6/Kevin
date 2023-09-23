@@ -1,7 +1,8 @@
 name: Kevin Publish AWS Provider docker
 
 on:
-  pull_request:
+  push:
+    branches: [ main ]
     paths:
       - kevin.core/**
       - kevin.aws/**
