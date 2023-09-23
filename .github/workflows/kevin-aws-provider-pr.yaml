@@ -5,12 +5,11 @@ on:
     paths:
       - kevin.aws/**
       - kevin.core/**
+      - .github/workflows/kevin-aws-provider-pr.yaml
   push:
     branches: [ main ]
     paths:
       - kevin.aws/**
-env:
-  MAJOR_VERSION: "1.0"
 jobs:
   build_aws_provider:
     runs-on: ubuntu-latest

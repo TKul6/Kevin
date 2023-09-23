@@ -4,8 +4,8 @@ on:
     branches: [ main ]
     paths:
       - kevin.aws/**
-env:
-  MAJOR_VERSION: "1.0"
+      - github/workflows/kevin-aws-provider-publish.yaml
+
 jobs:
   publish-aws-provider:
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
       - run: npm run build --if-present
         working-directory: ./kevin.aws
         name: Build AWS Provider
-      - run: npm version $MAJOR_VERSION.${{ github.run_number }}-alpha
+      - run: npm version ${{ vars.MAJOR_VERSION }}.${{ github.run_number }}-alpha
         name: Bump ReAWSdis provider package's version.
         working-directory: ./kevin.aws    
       - run: npm publish --access=public
