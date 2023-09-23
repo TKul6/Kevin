@@ -28,5 +28,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider${{MAJOR_VERSION}}.${{ github.run_number }}-alpha
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider:latest,${{ secrets.DOCKERHUB_USERNAME }}/kevin-aws-provider$MAJOR_VERSION.${{ github.run_number }}-alpha
           labels: version=$MAJOR_VERSION.${{ github.run_number }}-alpha
