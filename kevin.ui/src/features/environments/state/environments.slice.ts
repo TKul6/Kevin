@@ -13,7 +13,7 @@ export interface EnvironmentsState {
   createEnvironmentModel: createEnvironmentModel;
 }
 
-const initialState: EnvironmentsState = {
+export const initialState: EnvironmentsState = {
   environments: [],
   status: LoadingStatus.NotLoaded,
   selectedEnvironment: null,
@@ -32,10 +32,11 @@ export const environmentsSlice = createSlice({
   reducers: {
 
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder) => { 
     builder
       .addCase(actions.loadEnvironments.pending, (state) => {
         state.status = LoadingStatus.Loading;
+        state.environments = [];
       })
       .addCase(actions.loadEnvironments.fulfilled, (state, action) => {
         state.status = LoadingStatus.Loaded;

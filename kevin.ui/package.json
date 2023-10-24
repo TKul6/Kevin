@@ -34,7 +34,7 @@
     "build:core": "npm ci --prefix ../kevin.core && npm run build --prefix ../kevin.core",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --passWithNoTests",
+    "test": "npx jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -58,5 +58,9 @@
   "workspaces": [
     "../kevin.core"
   ],
-  "proxy": "http://localhost:3000"
+  "proxy": "http://localhost:3000",
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "ts-jest": "^29.0.5"
+  }
 }
